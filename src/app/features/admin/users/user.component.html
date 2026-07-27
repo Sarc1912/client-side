@@ -1,0 +1,122 @@
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Usuarios</h1>
+        <p class="page-subtitle">Gestión de clientes registrados</p>
+    </div>
+</div>
+
+<!-- Filters bar -->
+<div class="card" style="padding: 1rem; margin-bottom: 1rem;">
+    <div class="filters-bar">
+        <div class="search-wrapper">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="search-icon">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+            </svg>
+            <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" class="form-input search-input"
+                placeholder="Buscar por nombre, email o ID..." />
+        </div>
+        <select [(ngModel)]="statusFilter" (ngModelChange)="onSearch()" class="form-input" style="width: auto;">
+            <option value="">Todos los estados</option>
+            <option value="active">Activo</option>
+            <option value="suspended">Suspendido</option>
+            <option value="blocked">Bloqueado</option>
+        </select>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card" style="padding: 0; overflow: hidden;">
+    @if (loading()) {
+    <div class="table-skeleton">
+        @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="skeleton-row-full"></div>
+        }
+    </div>
+    } @else if (filtered().length === 0) {
+    <div class="empty-table">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="color:var(--text-muted)">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        <p>No se encontraron usuarios</p>
+    </div>
+    } @else {
+    <table>
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Score</th>
+                <th>Estado</th>
+                <th>Registro</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (user of paginated(); track user.id) {
+            <tr>
+                <td>
+                    <div class="user-cell">
+                        <div class="table-avatar">{{ user.fullName[0] }}</div>
+                        <div>
+                            <div>{{ user.fullName }}</div>
+                            <div style="font-size:0.72rem;color:var(--text-muted)">{{ user.nationalId }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                <td>
+                    <span [class]="scoreBadge(user.creditScore)">{{ user.creditScore }}</span>
+                </td>
+                <td><span class="badge" [class]="statusBadge(user.status)">{{ user.status }}</span></td>
+                <td>{{ user.createdAt | date:'dd/MM/yy' }}</td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn" title="Ver detalle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor"
+                                    stroke-width="2" />
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor"
+                                    stroke-width="2" />
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                                    stroke-width="2" />
+                            </svg>
+                        </button>
+                        <button class="action-btn danger" title="Bloquear" (click)="toggleStatus(user)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="currentColor"
+                                    stroke-width="2" />
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <span class="pagination-info">{{ filtered().length }} usuarios · página {{ page() }} de {{ totalPages()
+            }}</span>
+        <div class="pagination-btns">
+            <button class="btn-ghost pg-btn" [disabled]="page() === 1" (click)="page.set(page() - 1)">‹</button>
+            @for (p of pageRange(); track p) {
+            <button class="pg-btn" [class.active]="p === page()" (click)="page.set(p)">{{ p }}</button>
+            }
+            <button class="btn-ghost pg-btn" [disabled]="page() === totalPages()"
+                (click)="page.set(page() + 1)">›</button>
+        </div>
+    </div>
+    }
+</div>

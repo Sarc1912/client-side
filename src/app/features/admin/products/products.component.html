@@ -1,0 +1,100 @@
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Productos</h1>
+        <p class="page-subtitle">Catálogo de productos disponibles para financiamiento</p>
+    </div>
+    <button class="btn-primary" (click)="openCreate()">
+        <ng-icon name="heroPlus" size="16"></ng-icon>
+        Nuevo producto
+    </button>
+</div>
+
+<div class="card" style="padding: 1rem; margin-bottom: 1rem;">
+    <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+        <div style="position:relative;flex:1;min-width:200px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <input [(ngModel)]="search" (ngModelChange)="filterProducts()" class="form-input"
+                style="padding-left:2.25rem;" placeholder="Buscar producto..." />
+        </div>
+        <select [(ngModel)]="statusFilter" (ngModelChange)="filterProducts()" class="form-input" style="width:auto;">
+            <option value="">Todos los estados</option>
+            <option value="active">Activo</option>
+            <option value="sold">Vendido</option>
+            <option value="archived">Archivado</option>
+        </select>
+    </div>
+</div>
+
+<div class="card" style="padding:0;overflow:hidden;">
+    @if (loading()) {
+    <div style="padding:2rem;text-align:center;color:var(--text-muted);">Cargando productos...</div>
+    } @else if (filtered().length === 0) {
+    <div style="padding:3rem;text-align:center;color:var(--text-muted);">No se encontraron productos</div>
+    } @else {
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio base</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (product of filtered(); track product.id) {
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:0.75rem;">
+                        <div class="product-thumb">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="color:var(--text-muted)">
+                                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor"
+                                    stroke-width="1.5" />
+                                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div>{{ product.title }}</div>
+                            <div style="font-size:0.72rem;color:var(--text-muted);">{{ product.brand ?? '—' }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ product.category?.name ?? ('Cat. #' + product.categoryId) }}</td>
+                <td>{{ product.basePrice | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td>
+                    <span
+                        [class]="product.stockQuantity > 5 ? 'badge badge-success' : product.stockQuantity > 0 ? 'badge badge-warning' : 'badge badge-danger'">
+                        {{ product.stockQuantity }}
+                    </span>
+                </td>
+                <td><span class="badge" [class]="statusBadge(product.status)">{{ product.status }}</span></td>
+                <td>
+                    <div style="display:flex;gap:0.35rem;">
+                        <button class="action-btn" title="Editar">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor"
+                                    stroke-width="2" />
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                                    stroke-width="2" />
+                            </svg>
+                        </button>
+                        <button class="action-btn danger" title="Archivar" (click)="archive(product)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <polyline points="21 8 21 21 3 21 3 8" stroke="currentColor" stroke-width="2" />
+                                <rect x="1" y="3" width="22" height="5" stroke="currentColor" stroke-width="2" />
+                                <line x1="10" y1="12" x2="14" y2="12" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    }
+</div>
