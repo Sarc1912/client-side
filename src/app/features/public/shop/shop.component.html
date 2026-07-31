@@ -1,0 +1,110 @@
+<div class="shop-wrapper">
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-orb hero-orb1"></div>
+        <div class="hero-orb hero-orb2"></div>
+        <div class="hero-content">
+            <span class="hero-tag">Financiamiento Flexible</span>
+            <h1 class="hero-title">Equipa tu vida,<br><span class="hero-accent">paga a tu ritmo</span></h1>
+            <p class="hero-sub">Encuentra el producto perfecto y solicita financiamiento en minutos con tasas
+                competitivas.</p>
+            <div class="hero-search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="hs-icon">
+                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <input [(ngModel)]="searchQuery" (ngModelChange)="filterProducts()" class="hs-input"
+                    placeholder="Buscar productos..." />
+            </div>
+        </div>
+    </div>
+
+    <div class="shop-main">
+        <!-- Categories sidebar -->
+        <aside class="cat-sidebar">
+            <h3 class="cat-title">Categorías</h3>
+            <button class="cat-item" [class.active]="selectedCategory() === ''"
+                (click)="selectedCategory.set('');filterProducts()">
+                Todos los productos
+            </button>
+            @for (cat of categories(); track cat) {
+            <button class="cat-item" [class.active]="selectedCategory() === cat"
+                (click)="selectedCategory.set(cat);filterProducts()">
+                {{ cat }}
+            </button>
+            }
+        </aside>
+
+        <!-- Product grid -->
+        <div class="product-grid">
+            @if (loading()) {
+            @for (i of [1,2,3,4,5,6]; track i) {
+            <div class="product-skeleton"></div>
+            }
+            } @else if (filtered().length === 0) {
+            <div class="empty-shop">
+                <p>No se encontraron productos</p>
+            </div>
+            } @else {
+            @for (product of filtered(); track product.id) {
+            <div class="product-card">
+                <div class="product-img-wrapper carousel-wrapper">
+                    @if (product.images && product.images.length > 0) {
+                    <!-- Contenedor de imágenes en capas -->
+                    <div class="carousel-track">
+                        @for (img of product.images; track img.id; let i = $index) {
+                        <img [src]="img.url" [alt]="img.altText || product.title" class="product-img carousel-slide"
+                            [class.active]="(currentImageIndexes[product.id] || 0) === i" />
+                        }
+                    </div>
+
+                    <!-- Flechas de navegación -->
+                    @if (product.images.length > 1) {
+                    <button class="carousel-btn prev" (click)="prevImage(product.id, product.images.length, $event)">
+                        &#10094;
+                    </button>
+                    <button class="carousel-btn next" (click)="nextImage(product.id, product.images.length, $event)">
+                        &#10095;
+                    </button>
+                    }
+                    } @else {
+                    <div class="product-img-placeholder">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="color:var(--text-muted)">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor"
+                                stroke-width="1.5" />
+                            <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                    </div>
+                    }
+
+                    <div class="product-badge-stock" [class.out]="product.stockQuantity === 0">
+                        {{ product.stockQuantity > 0 ? 'En stock' : 'Agotado' }}
+                    </div>
+                </div>
+                <div class="product-body">
+                    <span class="product-brand">{{ product.brand ?? product.category?.name ?? 'Sin marca' }}</span>
+                    <h3 class="product-title">{{ product.title }}</h3>
+                    <div class="product-price-row">
+                        <span class="product-price">{{ product.basePrice | currency:'USD':'symbol':'1.0-0' }}</span>
+                        @if (product.financingPlans && product.financingPlans.length > 0) {
+                        <span class="product-installment">desde 12 cuotas</span>
+                        }
+                    </div>
+                    @if (product.financingPlans && product.financingPlans.length > 0) {
+                    <div class="plans-pills">
+                        @for (plan of product.financingPlans.slice(0, 3); track plan.id) {
+                        <span class="plan-pill">{{ plan.durationMonths }}m</span>
+                        }
+                    </div>
+                    }
+                    <button class="btn-primary shop-cta" [disabled]="product.stockQuantity === 0"
+                        [routerLink]="['/loan-request']" [queryParams]="{productId: product.id}">
+                        {{ product.stockQuantity > 0 ? 'Solicitar financiamiento' : 'No disponible' }}
+                    </button>
+                </div>
+            </div>
+            }
+            }
+        </div>
+    </div>
+</div>

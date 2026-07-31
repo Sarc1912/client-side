@@ -59,12 +59,13 @@
                             </svg>
                         </div>
                         <div>
-                            <div>{{ product.title }}</div>
+                            <div style="font-weight: 500;">{{ product.title }}</div>
                             <div style="font-size:0.72rem;color:var(--text-muted);">{{ product.brand ?? '—' }}</div>
                         </div>
                     </div>
                 </td>
-                <td>{{ product.category?.name ?? ('Cat. #' + product.categoryId) }}</td>
+                <td style="color:var(--text-muted);">{{ product.category?.name ?? ('Cat. #' + product.categoryId) }}
+                </td>
                 <td>{{ product.basePrice | currency:'USD':'symbol':'1.0-0' }}</td>
                 <td>
                     <span
@@ -75,20 +76,24 @@
                 <td><span class="badge" [class]="statusBadge(product.status)">{{ product.status }}</span></td>
                 <td>
                     <div style="display:flex;gap:0.35rem;">
-                        <button class="action-btn" title="Editar">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor"
-                                    stroke-width="2" />
-                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
-                                    stroke-width="2" />
-                            </svg>
+                        <!-- Botón para ver detalles -->
+                        <button class="action-btn cursor-pointer" title="Ver detalles / Financiamiento"
+                            (click)="openDetail(product)">
+                            <ng-icon name="heroEye" size="18"></ng-icon>
                         </button>
-                        <button class="action-btn danger" title="Archivar" (click)="archive(product)">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                                <polyline points="21 8 21 21 3 21 3 8" stroke="currentColor" stroke-width="2" />
-                                <rect x="1" y="3" width="22" height="5" stroke="currentColor" stroke-width="2" />
-                                <line x1="10" y1="12" x2="14" y2="12" stroke="currentColor" stroke-width="2" />
-                            </svg>
+
+                        <!-- Botón para agregar detalles -->
+                        <button class="action-btn cursor-pointer" title="Agregar Detalles"
+                            (click)="openCreateDetail(product)">
+                            <ng-icon name="heroPlus" size="18"></ng-icon>
+                        </button>
+
+                        <button class="action-btn cursor-pointer" title="Editar" (click)="openEdit(product)">
+                            <ng-icon name="heroPencil" size="18"></ng-icon>
+                        </button>
+
+                        <button class="action-btn danger cursor-pointer" title="Archivar" (click)="archive(product)">
+                            <ng-icon name="heroTrash" size="18"></ng-icon>
                         </button>
                     </div>
                 </td>
@@ -98,3 +103,147 @@
     </table>
     }
 </div>
+
+<!-- Modal for Create/Update Product -->
+@if (isModalOpen()) {
+<div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content card" style="max-width: 700px;" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3 class="modal-title">{{ editingProduct() ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
+            <button class="close-btn" (click)="closeModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+        <form (ngSubmit)="saveProduct()" #prodForm="ngForm" class="modal-body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label">Título</label>
+                    <input type="text" name="title" [(ngModel)]="formData.title" class="form-input" required
+                        maxlength="255" placeholder="Ej. iPhone 15 Pro Max" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Categoría</label>
+                    <select name="categoryId" [(ngModel)]="formData.categoryId" class="form-input" required>
+                        <option [ngValue]="null" disabled>Selecciona una categoría</option>
+                        @for (cat of categories(); track cat.id) {
+                        <option [ngValue]="cat.id">{{ cat.name }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Marca (Opcional)</label>
+                    <input type="text" name="brand" [(ngModel)]="formData.brand" class="form-input" maxlength="100"
+                        placeholder="Ej. Apple" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Precio base</label>
+                    <input type="number" name="basePrice" [(ngModel)]="formData.basePrice" class="form-input" required
+                        min="0" step="0.01" placeholder="0.00" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Moneda</label>
+                    <select name="currency" [(ngModel)]="formData.currency" class="form-input" required>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="VES">VES (Bs.)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Stock</label>
+                    <input type="number" name="stockQuantity" [(ngModel)]="formData.stockQuantity" class="form-input"
+                        required min="0" step="1" placeholder="1" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Estado</label>
+                    <select name="status" [(ngModel)]="formData.status" class="form-input" required>
+                        <option value="active">Activo</option>
+                        <option value="sold">Vendido</option>
+                        <option value="archived">Archivado</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Sección de Imágenes con Input File -->
+            <div class="images-section">
+                <div class="images-header">
+                    <div>
+                        <h4>Imágenes del producto</h4>
+                        <span>{{ formData.images.length }} imagen(es)</span>
+                    </div>
+                    <button type="button" class="btn-primary" (click)="fileInput.click()">
+                        <ng-icon name="heroPlus" size="16"></ng-icon>
+                        Agregar imágenes
+                    </button>
+                    <input #fileInput hidden type="file" multiple accept="image/*" (change)="onFilesSelected($event)">
+                </div>
+
+                <!-- DRAG & DROP ZONE -->
+                <div class="upload-zone" (click)="fileInput.click()" (dragover)="$event.preventDefault()"
+                    (dragleave)="$event.preventDefault()" (drop)="onDropFiles($event)">
+                    <div class="upload-icon">
+                        <ng-icon name="heroPhoto" size="48"></ng-icon>
+                    </div>
+                    <h3>Arrastra tus imágenes aquí</h3>
+                    <p>O haz clic para explorar tu computadora</p>
+                    <small>JPG, PNG, WEBP</small>
+                </div>
+                @if(formData.images.length){
+                <div class="images-grid">
+                    @for(image of formData.images; track $index; let i = $index){
+                    <div class="image-card" [class.main-image]="image.isMain">
+                        <button type="button" class="main-btn" (click)="setMainImage(i)"
+                            [title]="image.isMain ? 'Imagen principal' : 'Establecer como principal'">
+                            @if(image.isMain){
+                            ⭐ Principal
+                            }@else{
+                            ☆
+                            }
+                        </button>
+                        <button class="delete-btn" type="button" (click)="removeImage(i)">
+                            <ng-icon name="heroTrash" size="15">
+                            </ng-icon>
+                        </button>
+                        <img [src]="image.url" alt="">
+                        <div class="image-footer">
+                            <input [(ngModel)]="image.altText" [name]="'alt_'+i" class="form-input"
+                                placeholder="Texto alternativo">
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <div class="modal-actions" style="margin-top: 1.5rem;">
+                <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+                <button type="submit" class="btn-primary" [disabled]="!prodForm.valid || isSubmitting()">
+                    {{ isSubmitting() ? 'Guardando...' : (editingProduct() ? 'Actualizar' : 'Crear') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+<!-- Modal para Ver Detalles / Financiamiento -->
+@if (isDetailModalOpen()) {
+<app-product-detail-modal [product]="selectedProductForDetail()" (close)="closeDetailModal()">
+</app-product-detail-modal>
+}
+
+<!-- Modal para Agregar Detalles / Especificaciones -->
+@if (isCreateDetailModalOpen()) {
+<app-product-create-detail-modal [product]="selectedProductForCreateDetail()" (close)="closeCreateDetailModal()"
+    (save)="saveSpecifications($event)">
+</app-product-create-detail-modal>
+}

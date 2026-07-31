@@ -25,6 +25,18 @@ export interface Category {
   children?: Category[];
 }
 
+// Product Image
+export interface ProductImage {
+  id: number;
+  productId: number;
+  url: string;
+  altText?: string;
+  order: number;
+  isMain: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Product
 export interface Product {
   id: number;
@@ -41,6 +53,7 @@ export interface Product {
   updatedAt: string;
   category?: Category;
   financingPlans?: FinancingPlan[];
+  images?: ProductImage[]; // <--- Agregada aquí
 }
 
 // Financing Plan

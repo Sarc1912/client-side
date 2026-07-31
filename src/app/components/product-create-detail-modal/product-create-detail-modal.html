@@ -1,0 +1,78 @@
+<div class="modal-overlay" (click)="close.emit()">
+    <div class="modal-content card" style="max-width: 650px;" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <div>
+                <h3 class="modal-title">Agregar Especificaciones</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
+                    Producto: <strong style="color: var(--text-main);">{{ product?.title }}</strong>
+                </p>
+            </div>
+            <button class="close-btn" (click)="close.emit()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
+        <form (ngSubmit)="saveSpecifications()" #specsForm="ngForm" class="modal-body">
+
+            <div
+                style="max-height: 350px; overflow-y: auto; padding-right: 0.25rem; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+
+                @if (isLoading) {
+                <!-- Estado de Carga con estilo coherente -->
+                <div
+                    style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); background: rgba(15, 23, 42, 0.5); border-radius: 8px; border: 1px dashed var(--border-color);">
+                    <p style="margin: 0; font-size: 0.9rem;">Cargando especificaciones existentes...</p>
+                </div>
+                } @else {
+                @for (spec of specifications; track $index; let i = $index) {
+                <div
+                    style="display: flex; gap: 0.75rem; align-items: center; background: rgba(15, 23, 42, 0.4); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color);">
+
+                    <!-- specKey -->
+                    <div style="flex: 1;">
+                        <label class="form-label" style="font-size: 0.75rem;">Clave (Ej. Memoria RAM)</label>
+                        <input type="text" [name]="'specKey_' + i" [(ngModel)]="spec.specKey" class="form-input"
+                            maxlength="50" required placeholder="Ej. Color, RAM, Peso" />
+                    </div>
+
+                    <!-- specValue -->
+                    <div style="flex: 1;">
+                        <label class="form-label" style="font-size: 0.75rem;">Valor (Ej. 8GB)</label>
+                        <input type="text" [name]="'specValue_' + i" [(ngModel)]="spec.specValue" class="form-input"
+                            maxlength="100" required placeholder="Ej. Azul, 8GB, 200g" />
+                    </div>
+
+                    <!-- Botón eliminar fila -->
+                    <button type="button" class="action-btn danger cursor-pointer" style="margin-top: 1.25rem;"
+                        (click)="removeSpecificationRow(i)" title="Eliminar fila">
+                        <ng-icon name="heroTrash" size="16"></ng-icon>
+                    </button>
+                </div>
+                }
+                }
+            </div>
+
+            <!-- Botón para añadir más filas (se oculta opcionalmente mientras carga) -->
+            @if (!isLoading) {
+            <button type="button" class="btn-secondary"
+                style="width: 100%; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;"
+                (click)="addSpecificationRow()">
+                <ng-icon name="heroPlus" size="16"></ng-icon>
+                Agregar otra especificación
+            </button>
+            }
+
+            <!-- Acciones de la modal -->
+            <div class="modal-actions"
+                style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <button type="button" class="btn-secondary" (click)="close.emit()">Cancelar</button>
+                <button type="submit" class="btn-primary" [disabled]="isSubmitting || isLoading">
+                    {{ isSubmitting ? 'Guardando...' : 'Guardar Especificaciones' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

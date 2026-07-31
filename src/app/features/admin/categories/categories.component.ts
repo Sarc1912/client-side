@@ -77,14 +77,12 @@ export class CategoriesComponent implements OnInit {
     this.isModalOpen.set(false);
   }
 
-  // --- NUEVA LÓGICA DE SLUG ---
   onNameChange(newName: string): void {
     if (!newName) {
       this.formData.slug = '';
       return;
     }
 
-    // Generar el slug automáticamente solo si estamos creando una nueva categoría
     if (!this.editingCategory()) {
       this.formData.slug = this.slugify(newName);
     }
