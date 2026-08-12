@@ -1,0 +1,130 @@
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+    .kpi-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .kpi-body { display: flex; flex-direction: column; }
+    .kpi-value { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); }
+    .kpi-label { font-size: 0.72rem; color: var(--text-muted); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    @media (max-width: 960px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .section-card { padding: 1.25rem 1.5rem; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .section-title { font-size: 1rem; font-weight: 600; margin: 0; }
+    .section-subtitle { font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--text-secondary); }
+    .link-all {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.8rem; color: var(--accent-hover);
+      text-decoration: none; font-weight: 600;
+    }
+    .link-all:hover { text-decoration: underline; }
+
+    /* Loan hero */
+    .loan-hero { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .loan-tabs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.25rem; }
+    .loan-tab {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.55rem 0.9rem;
+      cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .loan-tab:hover { border-color: var(--accent); }
+    .loan-tab.active { border-color: var(--accent); background: var(--accent-light); }
+    .loan-tab-bal { font-size: 0.72rem; font-weight: 700; color: var(--accent-hover); }
+    .loan-hero-left { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .loan-thumb {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--accent-light); color: var(--accent-hover);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .loan-product { font-size: 1.05rem; font-weight: 700; }
+    .loan-plan { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .loan-hero-right { display: flex; gap: 2rem; }
+    .loan-stat { display: flex; flex-direction: column; }
+    .loan-stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .loan-stat-value { font-size: 1.2rem; font-weight: 700; }
+    .loan-stat-value.accent { color: var(--accent-hover); }
+
+    /* Next payment */
+    .next-payment { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .np-amount { font-size: 2rem; font-weight: 800; color: var(--text-primary); }
+    .np-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.4rem; }
+    .np-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+    .np-due { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--text-muted); }
+    .np-due.overdue { color: var(--danger); }
+    .np-partial { margin-top: 0.5rem; font-size: 0.78rem; color: var(--warning); }
+    .np-pay-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+
+    .empty-inline {
+      padding: 2rem; text-align: center; color: var(--text-muted);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    }
+    .empty-inline p { margin: 0; font-size: 0.875rem; }
+
+    /* Schedule preview */
+    .schedule-preview { margin-top: 1rem; }
+    .schedule-row {
+      display: grid; grid-template-columns: 64px 1fr auto auto; gap: 0.75rem; align-items: center;
+      padding: 0.55rem 0; border-bottom: 1px solid var(--border);
+    }
+    .schedule-row:last-child { border-bottom: none; }
+    .sc-num { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+    .sc-date { font-size: 0.8rem; color: var(--text-muted); }
+    .sc-amount { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); text-align: right; }
+
+    /* Payments */
+    .pay-list { display: flex; flex-direction: column; }
+    .pay-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.65rem 0; border-bottom: 1px solid var(--border);
+    }
+    .pay-row:last-child { border-bottom: none; }
+    .pay-method { display: flex; align-items: center; gap: 0.7rem; }
+    .pay-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+    .pay-title { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+    .pay-sub { display: block; font-size: 0.72rem; color: var(--text-muted); }
+    .pay-amount { font-size: 0.9rem; font-weight: 700; color: var(--success); }
+
+    /* Purchases */
+    .purchase-list { display: flex; flex-direction: column; }
+    .purchase-row {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.8rem 0.5rem; border-bottom: 1px solid var(--border);
+      transition: background 0.15s; border-radius: 8px;
+    }
+    .purchase-row:last-child { border-bottom: none; }
+    .purchase-row:hover { background: var(--bg-hover); }
+    .purchase-thumb {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: var(--bg-surface); color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .purchase-info { flex: 1; display: flex; flex-direction: column; }
+    .purchase-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+    .purchase-sub { font-size: 0.75rem; color: var(--text-muted); }
+    .purchase-amount { font-size: 0.9rem; font-weight: 700; }
+    .purchase-chevron { color: var(--text-muted); }
+
+    .empty-state {
+      padding: 3rem 1rem; text-align: center; color: var(--text-muted);
+      display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+    }
+    .empty-state p { margin: 0; font-size: 0.9rem; }
+
+    /* Skeletons */
+    .kpi-skeleton { height: 74px; border-radius: 14px; background: linear-gradient(90deg, var(--bg-card) 25%, var(--border) 50%, var(--bg-card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .skeleton-card { height: 260px; border-radius: 14px; background: linear-gradient(90deg, var(--bg-card) 25%, var(--border) 50%, var(--bg-card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }

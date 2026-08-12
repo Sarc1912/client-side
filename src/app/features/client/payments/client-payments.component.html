@@ -1,0 +1,70 @@
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Mis pagos</h1>
+        <p class="page-subtitle">Historial de pagos y reporte de nuevas cuotas</p>
+      </div>
+      <div class="header-actions">
+        <select [(ngModel)]="selectedLoanId" class="form-input" style="width:auto;">
+          <option [ngValue]="null" disabled>Selecciona un préstamo</option>
+          @for (loan of payableLoans(); track loan.id) {
+            <option [ngValue]="loan.id">#{{ loan.id }} — {{ loanProductsLabel(loan, 'Préstamo #' + loan.id) }}</option>
+          }
+        </select>
+        <button class="btn-primary" (click)="openPayment()" [disabled]="!selectedLoanId || !selectedLoan()">
+          <ng-icon name="heroBanknotes" size="16"></ng-icon>
+          Reportar pago
+        </button>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      @if (loading()) {
+        <div style="padding: 2rem; text-align: center; color: var(--text-muted);">Cargando pagos...</div>
+      } @else if (myPayments().length === 0) {
+        <div style="padding: 3rem; text-align: center; color: var(--text-muted);">
+          <ng-icon name="heroWallet" size="30" style="margin-bottom:0.5rem;"></ng-icon>
+          <p style="margin:0;">Aún no has realizado pagos</p>
+        </div>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>#Ref</th>
+              <th>Fecha</th>
+              <th>Préstamo</th>
+              <th>Cuota</th>
+              <th>Método</th>
+              <th>Estado</th>
+              <th style="text-align:right;">Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of myPayments(); track p.id) {
+              <tr>
+                <td style="font-family:monospace;font-size:0.8rem;">{{ p.transactionReference ?? ('#' + p.id) }}</td>
+                <td>{{ p.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td style="font-size:0.85rem;">#{{ p.loanId }}</td>
+                <td style="font-size:0.85rem;">
+                  @if (p.scheduleItem) {
+                    {{ p.scheduleItem.installmentNumber === 0 ? 'Enganche' : 'Cuota #' + p.scheduleItem.installmentNumber }}
+                  } @else { — }
+                </td>
+                <td>
+                  <span class="badge badge-accent">{{ methodLabel(p.paymentMethod) }}</span>
+                </td>
+                <td><span class="badge" [class]="paymentStatusBadge(p.paymentStatus)">{{ paymentStatusLabel(p.paymentStatus) }}</span></td>
+                <td style="text-align:right;color:var(--success);font-weight:600;">{{ p.amountPaid | currency:'USD':'symbol':'1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    @if (showPaymentModal() && selectedLoan()) {
+      <app-client-payment-modal
+        [loan]="selectedLoan()!"
+        (closed)="showPaymentModal.set(false)"
+        (paid)="onPaid()"
+      ></app-client-payment-modal>
+    }

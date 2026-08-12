@@ -1,0 +1,97 @@
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Préstamos Activos</h1>
+        <p class="page-subtitle">Seguimiento de todos los préstamos en cartera</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      @if (loading()) {
+        <div style="padding: 2rem; text-align: center; color: var(--text-muted);">Cargando préstamos...</div>
+      } @else if (loans().length === 0) {
+        <div style="padding: 3rem; text-align: center; color: var(--text-muted);">No hay préstamos activos</div>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Capital</th>
+              <th>Cuota mensual</th>
+              <th>Saldo restante</th>
+              <th>Fecha fin</th>
+              <th>Estado</th>
+              <th>Cronograma</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (loan of loans(); track loan.id) {
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem;">
+                    <div class="table-avatar">{{ loan.user?.fullName?.[0] ?? 'U' }}</div>
+                    {{ loan.user?.fullName ?? ('Usuario #' + loan.userId) }}
+                  </div>
+                </td>
+                <td>{{ loan.principalAmount | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td>{{ monthlyPayment(loan) | currency:'USD':'symbol':'1.2-2' }}</td>
+                <td>
+                  <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                    <span>{{ loan.remainingBalance | currency:'USD':'symbol':'1.0-0' }}</span>
+                    <div class="progress-bar">
+                      <div class="progress-fill"
+                        [style.width.%]="progressPercent(loan)"
+                        [style.background]="progressColor(loan)">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ loan.expectedEndDate | date:'dd/MM/yyyy' }}</td>
+                <td><span class="badge" [class]="loanStatusBadge(loan.loanStatus)">{{ loanStatusLabel(loan.loanStatus) }}</span></td>
+                <td>
+                  <button class="action-btn" (click)="toggleSchedule(loan.id)" title="Ver cronograma">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
+                      <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
+                      <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <!-- Schedule row -->
+              @if (expandedLoanId() === loan.id && loan.scheduleItems) {
+                <tr class="schedule-row">
+                  <td colspan="7" style="padding: 0;">
+                    <div class="schedule-panel">
+                      <table style="border: none;">
+                        <thead>
+                          <tr>
+                            <th style="border-bottom: 1px solid var(--border);">#</th>
+                            <th style="border-bottom: 1px solid var(--border);">Vencimiento</th>
+                            <th style="border-bottom: 1px solid var(--border);">Monto</th>
+                            <th style="border-bottom: 1px solid var(--border);">Pagado</th>
+                            <th style="border-bottom: 1px solid var(--border);">Estado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (item of loan.scheduleItems; track item.id) {
+                            <tr>
+                              <td>{{ item.installmentNumber === 0 ? 'Enganche' : item.installmentNumber }}</td>
+                              <td>{{ item.dueDate | date:'dd/MM/yy' }}</td>
+                              <td>{{ item.amountDue | currency:'USD':'symbol':'1.2-2' }}</td>
+                              <td>{{ item.amountPaid | currency:'USD':'symbol':'1.2-2' }}</td>
+                              <td><span class="badge" [class]="scheduleStatusBadge(item.status)">{{ scheduleStatusLabel(item.status) }}</span></td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      }
+    </div>

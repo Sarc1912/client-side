@@ -248,6 +248,36 @@
     margin-left: auto;
 }
 
+.portfolio-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.ps-row {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.ps-row span {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.ps-row strong {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-hover);
+}
+
 .quick-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

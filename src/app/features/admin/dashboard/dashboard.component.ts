@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { ApiService } from '../../../core/services/api.service';
 import { DashboardStats, LoanApplication } from '../../../core/models';
 import { CurrencyPipe } from '@angular/common';
@@ -93,4 +93,26 @@ export class DashboardComponent implements OnInit {
     };
     return map[status] ?? 'badge badge-muted';
   }
+
+  portfolio = computed(() => this.stats()?.portfolio ?? null);
+
+  portfolioSegments = computed(() => {
+    const p = this.portfolio();
+    if (!p) return [];
+    const C = 2 * Math.PI * 50;
+    const raw = [
+      { color: '#22c55e', label: 'Al corriente', value: p.onTimeLoans, percent: p.onTimePercent },
+      { color: '#f59e0b', label: 'En mora', value: p.lateLoans, percent: p.latePercent },
+      { color: '#ef4444', label: 'Vencidos', value: p.overdueLoans, percent: p.overduePercent },
+    ];
+    let offset = 0;
+    const segments: { color: string; label: string; value: number; percent: number; dash: string; offset: number }[] = [];
+    for (const s of raw) {
+      if (s.percent <= 0) continue;
+      const len = (Math.min(100, s.percent) / 100) * C;
+      segments.push({ ...s, dash: `${len.toFixed(2)} ${(C - len).toFixed(2)}`, offset: -offset });
+      offset += len;
+    }
+    return segments;
+  });
 }

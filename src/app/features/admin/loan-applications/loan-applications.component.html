@@ -1,0 +1,82 @@
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Solicitudes de Préstamo</h1>
+        <p class="page-subtitle">Revisa y gestiona las solicitudes de financiamiento</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" (click)="showCreateModal.set(true)">+ Nueva solicitud</button>
+      </div>
+    </div>
+
+    <!-- Status tabs -->
+    <div class="status-tabs">
+      @for (tab of tabs; track tab.value) {
+        <button class="status-tab" [class.active]="activeTab() === tab.value" (click)="setTab(tab.value)">
+          {{ tab.label }}
+          <span class="tab-count">{{ countByStatus(tab.value) }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="card" style="padding: 0; overflow: hidden; margin-top: 1rem;">
+      @if (loading()) {
+        <div style="padding: 2rem; text-align: center; color: var(--text-muted);">Cargando solicitudes...</div>
+      } @else if (displayList().length === 0) {
+        <div style="padding: 3rem; text-align: center; color: var(--text-muted);">No hay solicitudes en esta categoría</div>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>Solicitante</th>
+              <th>Producto</th>
+              <th>Monto</th>
+              <th>Plan</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (app of displayList(); track app.id) {
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem;">
+                    <div class="table-avatar">{{ app.user?.fullName?.[0] ?? 'U' }}</div>
+                    <div>
+                      <div>{{ app.user?.fullName ?? ('Usuario #' + app.userId) }}</div>
+                      <div style="font-size:0.72rem;color:var(--text-muted)">Score: {{ app.user?.creditScore ?? '—' }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ loanProductsLabel(app, 'Producto #' + (app.financingPlan?.productId ?? app.financingPlanId)) }}</td>
+                <td>{{ app.totalLoanAmount | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td>
+                  <div style="font-size:0.8rem;">{{ app.financingPlan?.title ?? ('Plan #' + app.financingPlanId) }}</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted)">{{ app.financingPlan?.numberOfInstallments ?? '?' }} cuotas</div>
+                </td>
+                <td><span class="badge" [class]="statusBadge(app.status)">{{ statusLabel(app.status) }}</span></td>
+                <td>{{ app.appliedAt | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  @if (app.status === 'pending') {
+                    <div style="display:flex;gap:0.35rem;">
+                      <button class="btn-approve" (click)="updateStatus(app, 'approved')" title="Aprobar">✓ Aprobar</button>
+                      <button class="btn-reject" (click)="updateStatus(app, 'rejected')" title="Rechazar">✗</button>
+                    </div>
+                  } @else {
+                    <span style="font-size:0.8rem;color:var(--text-muted)">Sin acciones</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    @if (showCreateModal()) {
+      <app-loan-create-modal
+        (closed)="showCreateModal.set(false)"
+        (created)="load()"
+      ></app-loan-create-modal>
+    }

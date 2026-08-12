@@ -1,0 +1,150 @@
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Planes de Financiamiento</h1>
+        <p class="page-subtitle">Configura los planes disponibles para los productos</p>
+      </div>
+      <button class="btn-primary" (click)="openCreate()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+        Nuevo plan
+      </button>
+    </div>
+
+    <div class="plans-grid">
+      @if (loading()) {
+        @for (i of [1,2,3,4]; track i) {
+          <div class="plan-skeleton"></div>
+        }
+      } @else if (plans().length === 0) {
+        <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">No hay planes configurados</div>
+      } @else {
+        @for (plan of plans(); track plan.id) {
+          <div class="plan-card" [class.inactive]="!plan.isActive">
+            <div class="plan-header">
+              <h3 class="plan-name">{{ plan.title ?? ('Plan #' + plan.id) }}</h3>
+              <span class="badge" [class]="plan.isActive ? 'badge-success' : 'badge-muted'">
+                {{ plan.isActive ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+            <div style="font-size:0.78rem;color:var(--text-muted);">
+              {{ plan.product?.title ?? ('Producto #' + plan.productId) }}
+            </div>
+            <div class="plan-stats">
+              <div class="plan-stat">
+                <span class="ps-value">{{ plan.numberOfInstallments }}</span>
+                <span class="ps-label">cuotas</span>
+              </div>
+              <div class="plan-divider"></div>
+              <div class="plan-stat">
+                <span class="ps-value">{{ plan.interestRateApr }}%</span>
+                <span class="ps-label">interés anual</span>
+              </div>
+              <div class="plan-divider"></div>
+              <div class="plan-stat">
+                <span class="ps-value">{{ plan.downPayment | currency:'USD':'symbol':'1.0-0' }}</span>
+                <span class="ps-label">enganche</span>
+              </div>
+            </div>
+            <div class="plan-actions">
+              <button class="btn-ghost" style="font-size:0.8rem;padding:0.4rem 0.75rem;" (click)="toggleActive(plan)">
+                {{ plan.isActive ? 'Desactivar' : 'Activar' }}
+              </button>
+              <button class="btn-ghost" style="font-size:0.8rem;padding:0.4rem 0.75rem;" (click)="openEdit(plan)">Editar</button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    @if (isModalOpen()) {
+      <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal-content card" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ editingPlan() ? 'Editar Plan' : 'Nuevo Plan' }}</h3>
+            <button class="close-btn" (click)="closeModal()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+          <form (ngSubmit)="savePlan()" #planForm="ngForm" class="modal-body">
+            @if (error()) {
+              <div class="error-alert" style="margin-bottom:1rem;">{{ error() }}</div>
+            }
+
+            <div class="form-group">
+              <label class="form-label">Producto</label>
+              <select name="productId" [(ngModel)]="formData.productId" (ngModelChange)="onProductChange()" class="form-input" required>
+                <option [ngValue]="null" disabled>Selecciona un producto</option>
+                @for (product of products(); track product.id) {
+                  <option [ngValue]="product.id">{{ product.title }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Título (opcional)</label>
+              <input type="text" name="title" [(ngModel)]="formData.title" class="form-input" placeholder="Ej. Plan 12 meses"/>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nº de cuotas</label>
+                <input type="number" name="numberOfInstallments" [(ngModel)]="formData.numberOfInstallments" (ngModelChange)="recalc()" class="form-input" required min="1"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Frecuencia</label>
+                <select name="frequency" [(ngModel)]="formData.frequency" class="form-input" required>
+                  <option value="weekly">Semanal</option>
+                  <option value="bi-weekly">Quincenal</option>
+                  <option value="monthly">Mensual</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Cuota mensual (auto)</label>
+                <div class="cuota-display">{{ preview().installment | currency:'USD':'symbol':'1.2-2' }}</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Enganche</label>
+                <input type="number" name="downPayment" [(ngModel)]="formData.downPayment" (ngModelChange)="recalc()" class="form-input" min="0" step="0.01"/>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tasa de interés anual (%)</label>
+              <input type="number" name="interestRateApr" [(ngModel)]="formData.interestRateApr" (ngModelChange)="recalc()" class="form-input" min="0" step="0.01"/>
+            </div>
+
+            <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--text-secondary);">
+              <input type="checkbox" name="isActive" [(ngModel)]="formData.isActive"/>
+              Plan activo
+            </label>
+
+            @if (preview().baseAmount > 0) {
+              <div class="plan-preview">
+                <div class="pp-header">
+                  <span class="pp-title">Vista previa del cálculo</span>
+                  <span class="pp-sub">Cuota calculada automáticamente según monto, porcentaje y plazo</span>
+                </div>
+                <div class="pp-row"><span>Monto (producto)</span><strong>{{ preview().baseAmount | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+                <div class="pp-row"><span>Porcentaje de interés</span><strong>{{ preview().interestRate }}%</strong></div>
+                <div class="pp-row"><span>Plazo</span><strong>{{ preview().months }} meses</strong></div>
+                <div class="pp-row"><span>Interés calculado</span><strong>{{ preview().interestAmount | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+                <div class="pp-row"><span>Enganche</span><strong>{{ preview().downPayment | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+                <div class="pp-row pp-total"><span>Cuota mensual</span><strong>{{ preview().installment | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+                <div class="pp-row pp-total"><span>Total a pagar</span><strong>{{ preview().totalToRepay | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+              </div>
+            }
+
+            <div class="modal-actions">
+              <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+              <button type="submit" class="btn-primary" [disabled]="!planForm.valid || isSubmitting()">
+                {{ isSubmitting() ? 'Guardando...' : (editingPlan() ? 'Actualizar' : 'Crear') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }

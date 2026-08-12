@@ -1,0 +1,133 @@
+    <div class="modal-overlay" (click)="close()">
+      <div class="modal-content card" style="max-width: 720px; max-height: 90vh; overflow-y: auto;" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Nueva solicitud de préstamo</h3>
+          <button class="close-btn" (click)="close()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          @if (error()) {
+            <div class="error-alert">{{ error() }}</div>
+          }
+
+          <!-- Client -->
+          <div class="form-group">
+            <label class="form-label">Cliente</label>
+            <select [(ngModel)]="selectedUserId" class="form-input" required>
+              <option [ngValue]="null" disabled>Selecciona un cliente</option>
+              @for (u of clientUsers(); track u.id) {
+                <option [ngValue]="u.id">{{ u.fullName }} — {{ u.email }}</option>
+              }
+            </select>
+            @if (clientUsers().length === 0 && !loadingUsers()) {
+              <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem;">No hay clientes registrados</div>
+            }
+          </div>
+
+          <!-- Selected products -->
+          @if (selectedItems().length > 0) {
+            <div class="sub-section">
+              <h4 class="sub-title">Productos del préstamo</h4>
+              <div class="item-list">
+                @for (item of selectedItems(); track item.product.id) {
+                  <div class="item-row">
+                    <div class="item-info">
+                      <span class="item-name">{{ item.product.title }}</span>
+                      <span class="item-price">{{ item.product.basePrice | currency:'USD':'symbol':'1.0-0' }} c/u</span>
+                    </div>
+                    <div class="item-qty">
+                      <button type="button" class="qty-btn" (click)="changeQty(item.product.id, -1)">−</button>
+                      <span class="qty-val">{{ item.quantity }}</span>
+                      <button type="button" class="qty-btn" (click)="changeQty(item.product.id, 1)" [disabled]="item.quantity >= (item.product.stockQuantity || 1)">+</button>
+                    </div>
+                    <span class="item-subtotal">{{ item.product.basePrice * item.quantity | currency:'USD':'symbol':'1.0-0' }}</span>
+                    <button type="button" class="item-remove" (click)="removeItem(item.product.id)" title="Quitar">✕</button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Add products -->
+          <div class="sub-section">
+            <h4 class="sub-title">Agregar productos al préstamo</h4>
+            <div class="add-search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="color:var(--text-muted);flex-shrink:0;">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" />
+              </svg>
+              <input [(ngModel)]="search" class="form-input" style="border:none;background:transparent;padding-left:0;" placeholder="Buscar productos..."/>
+            </div>
+            <div class="add-grid">
+              @for (p of availableProducts(); track p.id) {
+                <div class="add-card">
+                  <div class="add-info">
+                    <span class="add-name">{{ p.title }}</span>
+                    <span class="add-price">{{ p.basePrice | currency:'USD':'symbol':'1.0-0' }} · Stock: {{ p.stockQuantity }}</span>
+                  </div>
+                  <button type="button" class="btn-ghost add-btn" [disabled]="p.stockQuantity === 0" (click)="addProduct(p)">
+                    {{ p.stockQuantity === 0 ? 'Agotado' : '+ Añadir' }}
+                  </button>
+                </div>
+              }
+              @if (availableProducts().length === 0 && !loadingProducts()) {
+                <div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:0.5rem;">No hay más productos disponibles</div>
+              }
+            </div>
+          </div>
+
+          <!-- Plan -->
+          @if (selectedItems().length > 0) {
+            <div class="sub-section">
+              <h4 class="sub-title">Plan de financiamiento</h4>
+              <div class="plans-list">
+                @for (plan of plans(); track plan.id) {
+                  <div class="plan-option" [class.selected]="selectedPlanId() === plan.id" (click)="selectedPlanId.set(plan.id)">
+                    <div class="plan-radio"><div class="radio-dot" [class.visible]="selectedPlanId() === plan.id"></div></div>
+                    <div class="plan-detail">
+                      <span class="plan-name">{{ plan.title ?? ('Plan #' + plan.id) }}</span>
+                      <span class="plan-info">{{ plan.numberOfInstallments }} cuotas · {{ plan.interestRateApr }}% anual · {{ plan.downPayment | currency:'USD':'symbol':'1.0-0' }} enganche</span>
+                    </div>
+                    <div class="plan-monthly">
+                      <span class="pm-val">{{ plan.installmentAmount | currency:'USD':'symbol':'1.0-0' }}</span>
+                      <span class="pm-label">/cuota</span>
+                    </div>
+                  </div>
+                }
+                @if (plans().length === 0) {
+                  <div style="text-align:center;color:var(--text-muted);padding:0.5rem;">No hay planes disponibles para el producto principal</div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Estimate preview -->
+          @if (selectedItems().length > 0 && selectedPlan()) {
+            <div class="estimate">
+              <div class="est-header">
+                <span class="est-title">Vista previa del cálculo</span>
+                <span class="est-sub">{{ selectedPlan()?.title ?? ('Plan #' + selectedPlan()?.id) }}</span>
+              </div>
+              <div class="est-row"><span>Monto (productos)</span><strong>{{ totalPrice() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+              <div class="est-row"><span>Porcentaje de interés</span><strong>{{ selectedPlan()?.interestRateApr }}%</strong></div>
+              <div class="est-row"><span>Plazo</span><strong>{{ selectedPlan()?.numberOfInstallments }} meses</strong></div>
+              <div class="est-row"><span>Interés calculado</span><strong>{{ interestAmount() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+              <div class="est-row"><span>Enganche estimado</span><strong>{{ estimateDownPayment() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+              <div class="est-row est-total"><span>Cuota mensual</span><strong>{{ estimateInstallment() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+              <div class="est-row est-total"><span>Total a pagar</span><strong>{{ totalToRepay() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+            </div>
+          }
+
+          <div class="modal-footer-actions">
+            <button type="button" class="btn-secondary" (click)="close()">Cancelar</button>
+            <button type="button" class="btn-primary" [disabled]="isSubmitting()" (click)="submit()">
+              {{ isSubmitting() ? 'Creando...' : 'Crear solicitud' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

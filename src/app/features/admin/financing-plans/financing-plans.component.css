@@ -1,0 +1,49 @@
+    .plans-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+    .plan-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .plan-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+    .plan-card.inactive { opacity: 0.6; }
+    .plan-header { display: flex; align-items: flex-start; justify-content: space-between; }
+    .plan-name { margin: 0; font-size: 0.95rem; font-weight: 600; }
+    .plan-stats { display: flex; align-items: center; gap: 0.75rem; }
+    .plan-stat { display: flex; flex-direction: column; align-items: center; flex: 1; }
+    .ps-value { font-size: 1.35rem; font-weight: 700; color: var(--accent-hover); }
+    .ps-label { font-size: 0.68rem; color: var(--text-muted); text-align: center; }
+    .plan-divider { width: 1px; height: 36px; background: var(--border); }
+    .plan-actions { display: flex; gap: 0.5rem; }
+    .plan-skeleton {
+      height: 160px; border-radius: 12px;
+      background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border) 50%, var(--bg-hover) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .cuota-display {
+      background: var(--bg-base); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.6rem 0.9rem;
+      font-size: 1rem; font-weight: 700; color: var(--accent-hover);
+    }
+    .plan-preview {
+      margin: 1.25rem 0;
+      background: var(--accent-light); border: 1px solid var(--accent);
+      border-radius: 12px; padding: 1rem 1.15rem;
+      display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .pp-header { margin-bottom: 0.25rem; display: flex; flex-direction: column; }
+    .pp-title { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+    .pp-sub { font-size: 0.75rem; color: var(--text-muted); }
+    .pp-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+    .pp-row strong { color: var(--text-primary); }
+    .pp-total { border-top: 1px solid var(--accent); padding-top: 0.6rem; margin-top: 0.3rem; font-size: 1rem; }
+    .pp-total strong { color: var(--accent-hover); font-size: 1.1rem; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .error-alert {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #f87171;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+    }

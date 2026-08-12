@@ -249,6 +249,21 @@ export interface DashboardStats {
   productTrend: { value: number, isUp: boolean, text: string };
   overdueLoans: number;
   overdueTrend: { value: number, isUp: boolean, text: string };
+  portfolio: {
+    totalLoans: number;
+    totalPrincipal: number;
+    totalBalance: number;
+    totalCollected: number;
+    onTimeLoans: number;
+    lateLoans: number;
+    overdueLoans: number;
+    onTimePercent: number;
+    latePercent: number;
+    overduePercent: number;
+    avgDaysLate: number;
+    recoveryRate: number;
+    avgCreditScore: number;
+  };
 }
 
 // Helper: label de producto(s) para una solicitud/préstamo (soporta varios items)

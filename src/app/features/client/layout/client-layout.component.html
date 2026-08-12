@@ -1,0 +1,42 @@
+    <div class="layout">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <a routerLink="/client/dashboard" class="brand">
+            <div class="brand-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#818cf8"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <span class="brand-text">Finan<span class="brand-accent">Crece</span></span>
+          </a>
+
+          <nav class="nav">
+            @for (item of navItems; track item.path) {
+              <a [routerLink]="item.path" routerLinkActive="nav-active" [routerLinkActiveOptions]="{ exact: true }"
+                class="nav-item">
+                <ng-icon [name]="item.icon" size="17"></ng-icon>
+                <span>{{ item.label }}</span>
+              </a>
+            }
+          </nav>
+
+          <div class="topbar-right">
+            <div class="user-chip">
+              <div class="user-avatar">{{ userInitials() }}</div>
+              <div class="user-meta">
+                <span class="user-name">{{ auth.currentUser()?.fullName ?? 'Usuario' }}</span>
+                <span class="user-role">Cliente</span>
+              </div>
+            </div>
+            <button class="logout-btn" (click)="auth.logout()" title="Cerrar sesión">
+              <ng-icon name="heroArrowRightOnRectangle" size="18"></ng-icon>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <router-outlet />
+      </main>
+    </div>
