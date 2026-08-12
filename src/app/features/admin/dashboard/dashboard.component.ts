@@ -1,8 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ApiService } from '../../../core/services/api.service';
-import { DashboardStats, ActiveLoan, LoanApplication } from '../../../core/models';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { DashboardStats, LoanApplication } from '../../../core/models';
+import { CurrencyPipe } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroUserGroup,
@@ -17,7 +16,7 @@ import { ionAlertCircleOutline } from '@ng-icons/ionicons'
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe, RouterLink, NgIconComponent],
+  imports: [CurrencyPipe, NgIconComponent],
   viewProviders: [
     provideIcons({
       heroUserGroup,

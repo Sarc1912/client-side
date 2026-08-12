@@ -2,17 +2,21 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
-import { LoanApplication } from '../../../core/models';
+import { LoanApplication, loanProductsLabel } from '../../../core/models';
 import { DatePipe } from '@angular/common';
+import { LoanCreateModalComponent } from './loan-create-modal.component';
 
 @Component({
   selector: 'app-loan-applications',
-  imports: [FormsModule, CurrencyPipe, DatePipe],
+  imports: [FormsModule, CurrencyPipe, DatePipe, LoanCreateModalComponent],
   template: `
     <div class="page-header">
       <div>
         <h1 class="page-title">Solicitudes de Préstamo</h1>
         <p class="page-subtitle">Revisa y gestiona las solicitudes de financiamiento</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" (click)="showCreateModal.set(true)">+ Nueva solicitud</button>
       </div>
     </div>
 
@@ -56,14 +60,14 @@ import { DatePipe } from '@angular/common';
                     </div>
                   </div>
                 </td>
-                <td>{{ app.product?.title ?? ('Producto #' + app.productId) }}</td>
-                <td>{{ app.requestedAmount | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td>{{ loanProductsLabel(app, 'Producto #' + (app.financingPlan?.productId ?? app.financingPlanId)) }}</td>
+                <td>{{ app.totalLoanAmount | currency:'USD':'symbol':'1.0-0' }}</td>
                 <td>
-                  <div style="font-size:0.8rem;">{{ app.financingPlan?.name ?? ('Plan #' + app.financingPlanId) }}</div>
-                  <div style="font-size:0.72rem;color:var(--text-muted)">{{ app.financingPlan?.durationMonths ?? '?' }} meses</div>
+                  <div style="font-size:0.8rem;">{{ app.financingPlan?.title ?? ('Plan #' + app.financingPlanId) }}</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted)">{{ app.financingPlan?.numberOfInstallments ?? '?' }} cuotas</div>
                 </td>
                 <td><span class="badge" [class]="statusBadge(app.status)">{{ statusLabel(app.status) }}</span></td>
-                <td>{{ app.createdAt | date:'dd/MM/yyyy' }}</td>
+                <td>{{ app.appliedAt | date:'dd/MM/yyyy' }}</td>
                 <td>
                   @if (app.status === 'pending') {
                     <div style="display:flex;gap:0.35rem;">
@@ -80,6 +84,13 @@ import { DatePipe } from '@angular/common';
         </table>
       }
     </div>
+
+    @if (showCreateModal()) {
+      <app-loan-create-modal
+        (closed)="showCreateModal.set(false)"
+        (created)="load()"
+      ></app-loan-create-modal>
+    }
   `,
   styles: [`
     .status-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; }
@@ -142,10 +153,12 @@ export class LoanApplicationsComponent implements OnInit {
   applications = signal<LoanApplication[]>([]);
   loading = signal(true);
   activeTab = signal('all');
+  showCreateModal = signal(false);
 
   tabs = [
     { label: 'Todas', value: 'all' },
     { label: 'Pendientes', value: 'pending' },
+    { label: 'En revisión', value: 'under_review' },
     { label: 'Aprobadas', value: 'approved' },
     { label: 'Rechazadas', value: 'rejected' },
     { label: 'Canceladas', value: 'cancelled' },
@@ -153,7 +166,14 @@ export class LoanApplicationsComponent implements OnInit {
 
   constructor(private api: ApiService) {}
 
+  loanProductsLabel = loanProductsLabel;
+
   ngOnInit(): void {
+    this.load();
+  }
+
+  load(): void {
+    this.loading.set(true);
     this.api.get<LoanApplication[]>('loan-applications').subscribe({
       next: (data) => { this.applications.set(Array.isArray(data) ? data : []); this.loading.set(false); },
       error: () => this.loading.set(false),
@@ -165,11 +185,17 @@ export class LoanApplicationsComponent implements OnInit {
   countByStatus = (s: string) => s === 'all' ? this.applications().length : this.applications().filter(a => a.status === s).length;
 
   updateStatus(app: LoanApplication, status: 'approved' | 'rejected'): void {
-    this.api.patch(`loan-applications/${app.id}`, { status }).subscribe(() => {
-      this.applications.update(list => list.map(a => a.id === app.id ? { ...a, status } : a));
+    const action = status === 'approved' ? 'approve' : 'reject';
+    const reason = status === 'rejected'
+      ? (prompt('Motivo del rechazo (opcional):') ?? '')
+      : undefined;
+
+    this.api.post(`loan-applications/${app.id}/${action}`, reason ? { reason } : {}).subscribe({
+      next: () => this.load(),
+      error: (err) => alert(err?.error?.message ?? 'No se pudo procesar la solicitud'),
     });
   }
 
-  statusLabel = (s: string) => ({ pending: 'Pendiente', approved: 'Aprobada', rejected: 'Rechazada', cancelled: 'Cancelada' }[s] ?? s);
-  statusBadge = (s: string) => ({ pending: 'badge-warning', approved: 'badge-success', rejected: 'badge-danger', cancelled: 'badge-muted' }[s] ?? 'badge-muted');
+  statusLabel = (s: string) => ({ pending: 'Pendiente', under_review: 'En revisión', approved: 'Aprobada', rejected: 'Rechazada', cancelled: 'Cancelada' }[s] ?? s);
+  statusBadge = (s: string) => ({ pending: 'badge-warning', under_review: 'badge-info', approved: 'badge-success', rejected: 'badge-danger', cancelled: 'badge-muted' }[s] ?? 'badge-muted');
 }

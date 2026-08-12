@@ -1,1 +1,113 @@
-<p>product-detail-modal works!</p>
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content card" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()" title="Cerrar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    @if (product) {
+      <div class="modal-grid">
+        <!-- Gallery -->
+        <div class="gallery">
+          @if (mainImage(); as img) {
+            <div class="gallery-main">
+              @if (images().length > 1) {
+                <button class="gallery-arrow prev" (click)="prevImage()">&#10094;</button>
+                <button class="gallery-arrow next" (click)="nextImage()">&#10095;</button>
+              }
+              <img [src]="img.url" [alt]="img.altText || product.title" />
+            </div>
+          } @else {
+            <div class="gallery-empty">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="color:var(--text-muted)">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.5" />
+                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.5" />
+              </svg>
+              <p>Sin imágenes</p>
+            </div>
+          }
+
+          @if (images().length > 1) {
+            <div class="gallery-thumbs">
+              @for (img of images(); track $index; let i = $index) {
+                <button class="thumb" [class.active]="mainImageIndex() === i" (click)="setMainImage(i)">
+                  <img [src]="img.url" [alt]="img.altText || product.title" />
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Details -->
+        <div class="details">
+          <div class="detail-meta">
+            <span class="meta-chip">{{ product.category?.name ?? ('Categoría #' + product.categoryId) }}</span>
+            @if (product.brand) {
+              <span class="meta-chip">{{ product.brand }}</span>
+            }
+            <span class="badge" [class]="stockBadge(product.stockQuantity)">
+              {{ product.stockQuantity > 0 ? (product.stockQuantity + ' en stock') : 'Agotado' }}
+            </span>
+            <span class="badge" [class]="statusBadge(product.status)">{{ statusLabel(product.status) }}</span>
+          </div>
+
+          <h2 class="detail-title">{{ product.title }}</h2>
+
+          <div class="detail-price">
+            {{ product.basePrice | currency: product.currency ?? 'USD' : 'symbol' : '1.0-0' }}
+          </div>
+
+          @if (plans().length > 0) {
+            <div class="detail-section">
+              <h4 class="section-title">Planes de financiamiento</h4>
+              <div class="plan-list">
+                @for (plan of plans(); track plan.id) {
+                  <div class="plan-item">
+                    <div class="plan-item-head">
+                      <span class="plan-name">{{ plan.title ?? ('Plan #' + plan.id) }}</span>
+                      <span class="plan-installments">{{ plan.numberOfInstallments }} cuotas</span>
+                    </div>
+                    <div class="plan-item-stats">
+                      <span class="plan-stat"><strong>{{ plan.installmentAmount | currency:'USD':'symbol':'1.2-2' }}</strong> /cuota</span>
+                      <span class="plan-stat">Enganche {{ plan.downPayment | currency:'USD':'symbol':'1.2-2' }}</span>
+                      <span class="plan-stat">{{ plan.interestRateApr }}% anual</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (specs().length > 0) {
+            <div class="detail-section">
+              <h4 class="section-title">Especificaciones</h4>
+              <div class="spec-table">
+                @for (spec of specs(); track spec.id) {
+                  <div class="spec-row">
+                    <span class="spec-key">{{ spec.specKey }}</span>
+                    <span class="spec-value">{{ spec.specValue }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (showRequest) {
+            <a
+              class="btn-primary cta"
+              [routerLink]="['/loan-request']"
+              [queryParams]="{ productId: product.id }"
+              (click)="closeModal()"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right:0.4rem;">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Solicitar financiamiento
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -12,8 +12,8 @@ export const authGuard: CanActivateFn = (route, state) => {
       if (auth.hasAnyRole(roles)) {
         return true;
       }
-      // If authenticated but lacks role, do not redirect to login, redirect to shop/home
-      return router.createUrlTree(['/shop']);
+      // If authenticated but lacks role, redirect to the user's home area
+      return router.createUrlTree([auth.homePath()]);
     }
     return true;
   }

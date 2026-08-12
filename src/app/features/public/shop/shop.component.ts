@@ -1,13 +1,15 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Product } from '../../../core/models';
+import { ProductDetailModal } from '../../../components/product-detail-modal/product-detail-modal';
 
 @Component({
   selector: 'app-shop',
-  imports: [CurrencyPipe, FormsModule, RouterLink],
+  imports: [CurrencyPipe, FormsModule, RouterLink, ProductDetailModal],
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.css']
 })
@@ -19,11 +21,19 @@ export class ShopComponent implements OnInit, OnDestroy {
   searchQuery = '';
   selectedCategory = signal('');
 
+  isDetailOpen = signal(false);
+  selectedProduct = signal<any>(null);
+
   // Control de índices actuales para cada producto en el carrusel
   currentImageIndexes: { [productId: number]: number } = {};
   private carouselInterval: any;
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService, public auth: AuthService) { }
+
+  userInitials = computed(() => {
+    const name = this.auth.currentUser()?.fullName ?? 'U';
+    return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  });
 
   ngOnInit(): void {
     this.api.get<Product[]>('products').subscribe({
@@ -108,5 +118,15 @@ export class ShopComponent implements OnInit, OnDestroy {
         .filter(p => !q || p.title.toLowerCase().includes(q) || (p.brand ?? '').toLowerCase().includes(q))
         .filter(p => !cat || p.category?.name === cat)
     );
+  }
+
+  openDetail(product: any): void {
+    this.selectedProduct.set(product);
+    this.isDetailOpen.set(true);
+  }
+
+  closeDetail(): void {
+    this.isDetailOpen.set(false);
+    this.selectedProduct.set(null);
   }
 }

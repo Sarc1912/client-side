@@ -42,7 +42,7 @@ import { ActiveLoan } from '../../../core/models';
                   </div>
                 </td>
                 <td>{{ loan.principalAmount | currency:'USD':'symbol':'1.0-0' }}</td>
-                <td>{{ loan.monthlyPayment | currency:'USD':'symbol':'1.2-2' }}</td>
+                <td>{{ monthlyPayment(loan) | currency:'USD':'symbol':'1.2-2' }}</td>
                 <td>
                   <div style="display:flex;flex-direction:column;gap:0.25rem;">
                     <span>{{ loan.remainingBalance | currency:'USD':'symbol':'1.0-0' }}</span>
@@ -54,8 +54,8 @@ import { ActiveLoan } from '../../../core/models';
                     </div>
                   </div>
                 </td>
-                <td>{{ loan.endDate | date:'dd/MM/yyyy' }}</td>
-                <td><span class="badge" [class]="loanStatusBadge(loan.status)">{{ loanStatusLabel(loan.status) }}</span></td>
+                <td>{{ loan.expectedEndDate | date:'dd/MM/yyyy' }}</td>
+                <td><span class="badge" [class]="loanStatusBadge(loan.loanStatus)">{{ loanStatusLabel(loan.loanStatus) }}</span></td>
                 <td>
                   <button class="action-btn" (click)="toggleSchedule(loan.id)" title="Ver cronograma">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -77,21 +77,19 @@ import { ActiveLoan } from '../../../core/models';
                           <tr>
                             <th style="border-bottom: 1px solid var(--border);">#</th>
                             <th style="border-bottom: 1px solid var(--border);">Vencimiento</th>
-                            <th style="border-bottom: 1px solid var(--border);">Capital</th>
-                            <th style="border-bottom: 1px solid var(--border);">Interés</th>
-                            <th style="border-bottom: 1px solid var(--border);">Total</th>
+                            <th style="border-bottom: 1px solid var(--border);">Monto</th>
+                            <th style="border-bottom: 1px solid var(--border);">Pagado</th>
                             <th style="border-bottom: 1px solid var(--border);">Estado</th>
                           </tr>
                         </thead>
                         <tbody>
                           @for (item of loan.scheduleItems; track item.id) {
                             <tr>
-                              <td>{{ item.installmentNumber }}</td>
+                              <td>{{ item.installmentNumber === 0 ? 'Enganche' : item.installmentNumber }}</td>
                               <td>{{ item.dueDate | date:'dd/MM/yy' }}</td>
-                              <td>{{ item.principalAmount | currency:'USD':'symbol':'1.2-2' }}</td>
-                              <td>{{ item.interestAmount | currency:'USD':'symbol':'1.2-2' }}</td>
-                              <td>{{ item.totalAmount | currency:'USD':'symbol':'1.2-2' }}</td>
-                              <td><span class="badge" [class]="scheduleStatusBadge(item.status)">{{ item.status }}</span></td>
+                              <td>{{ item.amountDue | currency:'USD':'symbol':'1.2-2' }}</td>
+                              <td>{{ item.amountPaid | currency:'USD':'symbol':'1.2-2' }}</td>
+                              <td><span class="badge" [class]="scheduleStatusBadge(item.status)">{{ scheduleStatusLabel(item.status) }}</span></td>
                             </tr>
                           }
                         </tbody>
@@ -147,9 +145,9 @@ export class ActiveLoansComponent implements OnInit {
   }
 
   progressPercent(loan: ActiveLoan): number {
-    if (!loan.totalAmount || loan.totalAmount === 0) return 0;
-    const paid = loan.totalAmount - loan.remainingBalance;
-    return Math.min(100, (paid / loan.totalAmount) * 100);
+    if (!loan.principalAmount || loan.principalAmount === 0) return 0;
+    const paid = Math.max(0, loan.principalAmount - loan.remainingBalance);
+    return Math.min(100, (paid / loan.principalAmount) * 100);
   }
   progressColor(loan: ActiveLoan): string {
     const p = this.progressPercent(loan);
@@ -158,7 +156,14 @@ export class ActiveLoansComponent implements OnInit {
     return '#f59e0b';
   }
 
-  loanStatusLabel = (s: string) => ({ current: 'Al corriente', delinquent: 'En mora', paid_off: 'Pagado', defaulted: 'Incumplido' }[s] ?? s);
-  loanStatusBadge = (s: string) => ({ current: 'badge-success', delinquent: 'badge-warning', paid_off: 'badge-info', defaulted: 'badge-danger' }[s] ?? 'badge-muted');
-  scheduleStatusBadge = (s: string) => ({ pending: 'badge-muted', paid: 'badge-success', overdue: 'badge-danger', partial: 'badge-warning' }[s] ?? 'badge-muted');
+  monthlyPayment(loan: ActiveLoan): number {
+    const items = loan.scheduleItems ?? [];
+    const installment = items.find(i => i.installmentNumber === 1);
+    return installment ? installment.amountDue : 0;
+  }
+
+  loanStatusLabel = (s: string) => ({ active: 'Activo', paid_in_full: 'Pagado', defaulted: 'Incumplido', written_off: 'Castigado' }[s] ?? s);
+  loanStatusBadge = (s: string) => ({ active: 'badge-success', paid_in_full: 'badge-info', defaulted: 'badge-danger', written_off: 'badge-muted' }[s] ?? 'badge-muted');
+  scheduleStatusLabel = (s: string) => ({ unpaid: 'Pendiente', partially_paid: 'Parcial', paid: 'Pagada', overdue: 'Vencida' }[s] ?? s);
+  scheduleStatusBadge = (s: string) => ({ unpaid: 'badge-muted', partially_paid: 'badge-warning', paid: 'badge-success', overdue: 'badge-danger' }[s] ?? 'badge-muted');
 }

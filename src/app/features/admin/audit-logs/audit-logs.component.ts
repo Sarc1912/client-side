@@ -37,23 +37,24 @@ import { AuditLog } from '../../../core/models';
           <thead>
             <tr>
               <th>Fecha</th>
-              <th>Usuario</th>
+              <th>Actor</th>
               <th>Acción</th>
               <th>Entidad</th>
               <th>ID</th>
-              <th>IP</th>
+              <th>Detalles</th>
             </tr>
           </thead>
           <tbody>
             @for (log of filtered(); track log.id) {
               <tr>
                 <td style="font-size:0.78rem;white-space:nowrap;">{{ log.createdAt | date:'dd/MM/yy HH:mm:ss' }}</td>
-<td>{{ log.user?.fullName ?? ('ID ' + log.userId) }}</td>                <td>
+                <td style="font-size:0.85rem;">{{ log.performedBy }}</td>
+                <td>
                   <span class="badge" [class]="actionBadge(log.action)">{{ log.action }}</span>
                 </td>
-                <td style="font-size:0.8rem;color:var(--text-secondary);">{{ log.entity }}</td>
-                <td style="font-family:monospace;font-size:0.78rem;">{{ log.entityId ?? '—' }}</td>
-                <td style="font-family:monospace;font-size:0.75rem;color:var(--text-muted);">{{ log.ipAddress ?? '—' }}</td>
+                <td style="font-size:0.8rem;color:var(--text-secondary);">{{ log.entityType }}</td>
+                <td style="font-family:monospace;font-size:0.78rem;">{{ log.entityId }}</td>
+                <td style="font-family:monospace;font-size:0.75rem;color:var(--text-muted);">{{ detailsText(log.details) }}</td>
               </tr>
             }
           </tbody>
@@ -87,9 +88,25 @@ export class AuditLogsComponent implements OnInit {
   filter(): void {
     let result = this.logs();
     const q = this.search.toLowerCase();
-    if (q) result = result.filter(l => l.action.toLowerCase().includes(q) || l.entity.toLowerCase().includes(q));
-    if (this.entityFilter) result = result.filter(l => l.entity === this.entityFilter);
+    if (q) {
+      result = result.filter(l =>
+        l.action.toLowerCase().includes(q) ||
+        l.entityType.toLowerCase().includes(q) ||
+        (l.performedBy ?? '').toLowerCase().includes(q) ||
+        String(l.entityId).includes(q)
+      );
+    }
+    if (this.entityFilter) result = result.filter(l => l.entityType === this.entityFilter);
     this.filtered.set(result);
+  }
+
+  detailsText(details: Record<string, any> | undefined): string {
+    if (!details) return '—';
+    try {
+      return JSON.stringify(details);
+    } catch {
+      return '—';
+    }
   }
 
   actionBadge = (action: string) => {

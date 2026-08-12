@@ -237,7 +237,8 @@
 
 <!-- Modal para Ver Detalles / Financiamiento -->
 @if (isDetailModalOpen()) {
-<app-product-detail-modal [product]="selectedProductForDetail()" (close)="closeDetailModal()">
+<app-product-detail-modal [product]="selectedProductForDetail()" [showRequest]="false"
+    (close)="closeDetailModal()">
 </app-product-detail-modal>
 }
 

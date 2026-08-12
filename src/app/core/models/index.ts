@@ -60,12 +60,26 @@ export interface Product {
 export interface FinancingPlan {
   id: number;
   productId: number;
-  name: string;
-  durationMonths: number;
-  interestRate: number;
-  downPaymentPercent: number;
+  title?: string;
+  numberOfInstallments: number;
+  installmentAmount: number;
+  downPayment: number;
+  frequency: 'weekly' | 'bi-weekly' | 'monthly';
+  interestRateApr: number;
   isActive: boolean;
   createdAt: string;
+  product?: Product;
+}
+
+// Loan Application Item
+export interface LoanApplicationItem {
+  id: number;
+  applicationId: number;
+  productId: number;
+  quantity: number;
+  unitPrice: number;
+  createdAt: string;
+  product?: Product;
 }
 
 // Loan Application
@@ -73,97 +87,123 @@ export interface LoanApplication {
   id: number;
   publicId: string;
   userId: number;
-  productId: number;
   financingPlanId: number;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
-  requestedAmount: number;
-  downPaymentAmount: number;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
+  status: 'pending' | 'under_review' | 'approved' | 'rejected' | 'cancelled';
+  rejectionReason?: string;
+  agreedInstallments: number;
+  agreedInstallmentAmount: number;
+  agreedDownPayment: number;
+  totalLoanAmount: number;
+  reviewedBy?: string;
+  appliedAt: string;
+  reviewedAt?: string;
   user?: User;
-  product?: Product;
   financingPlan?: FinancingPlan;
+  activeLoan?: ActiveLoan;
+  documents?: ApplicationDocument[];
+  items?: LoanApplicationItem[];
 }
 
 // Active Loan
 export interface ActiveLoan {
   id: number;
   publicId: string;
+  applicationId: number;
   userId: number;
-  loanApplicationId: number;
   principalAmount: number;
-  interestRate: number;
-  totalAmount: number;
-  monthlyPayment: number;
   remainingBalance: number;
+  loanStatus: 'active' | 'paid_in_full' | 'defaulted' | 'written_off';
   startDate: string;
-  endDate: string;
-  status: 'current' | 'delinquent' | 'paid_off' | 'defaulted';
+  expectedEndDate: string;
   createdAt: string;
   user?: User;
-  loanApplication?: LoanApplication;
+  application?: LoanApplication;
   scheduleItems?: LoanScheduleItem[];
+  payments?: PaymentRecord[];
 }
 
 // Loan Schedule Item
 export interface LoanScheduleItem {
   id: number;
-  activeLoanId: number;
+  loanId: number;
   installmentNumber: number;
   dueDate: string;
-  principalAmount: number;
-  interestAmount: number;
-  totalAmount: number;
-  paidAmount: number;
-  status: 'pending' | 'paid' | 'overdue' | 'partial';
+  amountDue: number;
+  amountPaid: number;
+  status: 'unpaid' | 'partially_paid' | 'paid' | 'overdue';
+  paidAt?: string;
+  loan?: ActiveLoan;
 }
 
 // Payment Record
 export interface PaymentRecord {
   id: number;
-  activeLoanId: number;
-  loanScheduleItemId?: number;
-  amount: number;
-  paymentDate: string;
+  publicId: string;
+  loanId: number;
+  scheduleItemId?: number;
+  amountPaid: number;
   paymentMethod: string;
-  referenceNumber?: string;
-  notes?: string;
+  transactionReference?: string;
+  paymentStatus: 'completed' | 'refunded' | 'failed';
   createdAt: string;
+  loan?: ActiveLoan;
+  scheduleItem?: LoanScheduleItem;
 }
 
 // Application Document
 export interface ApplicationDocument {
   id: number;
-  loanApplicationId: number;
+  applicationId: number;
   documentType: string;
-  fileName: string;
-  filePath: string;
+  fileUrl: string;
+  isVerified: boolean;
   uploadedAt: string;
+  application?: LoanApplication;
 }
 
 // Late Fee Penalty
 export interface LateFee {
   id: number;
-  activeLoanId: number;
-  loanScheduleItemId: number;
-  amount: number;
+  loanId: number;
+  scheduleItemId: number;
+  penaltyAmount: number;
   reason: string;
-  appliedAt: string;
   isPaid: boolean;
+  createdAt: string;
+  loan?: ActiveLoan;
+  scheduleItem?: LoanScheduleItem;
+}
+
+// Payment Method
+export interface PaymentMethod {
+  id: number;
+  code: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  requiresReference: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Payment Data (loan + pending installments + methods)
+export interface PaymentData {
+  loan: ActiveLoan;
+  pendingInstallments: LoanScheduleItem[];
+  paymentMethods: PaymentMethod[];
 }
 
 // Audit Log
 export interface AuditLog {
   id: number;
-  userId?: number;
+  entityType: string;
+  entityId: number;
   action: string;
-  entity: string;
-  entityId?: number;
+  performedBy: string;
   details?: Record<string, any>;
-  ipAddress?: string;
   createdAt: string;
-  user?: User;
 }
 
 // Pagination
@@ -209,4 +249,25 @@ export interface DashboardStats {
   productTrend: { value: number, isUp: boolean, text: string };
   overdueLoans: number;
   overdueTrend: { value: number, isUp: boolean, text: string };
+}
+
+// Helper: label de producto(s) para una solicitud/préstamo (soporta varios items)
+export function loanProductsLabel(
+  source:
+    | { items?: LoanApplicationItem[]; financingPlan?: FinancingPlan }
+    | { application?: LoanApplication }
+    | null
+    | undefined,
+  fallback: string,
+): string {
+  const app =
+    (source as { application?: LoanApplication } | null | undefined)?.application ??
+    (source as { items?: LoanApplicationItem[]; financingPlan?: FinancingPlan } | null | undefined);
+  const items = app?.items;
+  if (items && items.length > 0) {
+    const first = items[0]?.product?.title;
+    const base = first ?? `Producto #${items[0]?.productId ?? '?'}`;
+    return items.length > 1 ? `${base} (+${items.length - 1} más)` : base;
+  }
+  return app?.financingPlan?.product?.title ?? fallback;
 }

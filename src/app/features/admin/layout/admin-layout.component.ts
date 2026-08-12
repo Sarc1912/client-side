@@ -9,6 +9,7 @@ import {
   heroDocumentText,
   heroCurrencyDollar,
   heroCreditCard,
+  heroBanknotes,
   heroChartBar,
   heroShieldCheck
 } from '@ng-icons/heroicons/outline';
@@ -35,6 +36,7 @@ interface NavItem {
       heroDocumentText,
       heroCurrencyDollar,
       heroCreditCard,
+      heroBanknotes,
       heroChartBar,
       heroShieldCheck
     })
@@ -49,6 +51,7 @@ export class AdminLayoutComponent {
     { path: '/admin/loan-applications', label: 'Solicitudes', icon: 'heroDocumentText' },
     { path: '/admin/active-loans', label: 'Préstamos', icon: 'heroCurrencyDollar' },
     { path: '/admin/payments', label: 'Pagos', icon: 'heroCreditCard' },
+    { path: '/admin/payment-methods', label: 'Métodos de pago', icon: 'heroBanknotes' },
     { path: '/admin/financing-plans', label: 'Planes', icon: 'heroChartBar' },
     { path: '/admin/audit-logs', label: 'Auditoría', icon: 'heroShieldCheck' },
   ];

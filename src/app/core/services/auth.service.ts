@@ -16,6 +16,17 @@ export class AuthService {
   readonly isAuthenticated = computed(() => !!this._token());
   readonly isAdmin = computed(() => this._currentUser()?.role === 'admin');
 
+  private readonly staffRoles = ['admin', 'manager', 'supervisor', 'senior_manager', 'executive', 'cashier', 'employee'];
+
+  isStaff(): boolean {
+    const role = this._currentUser()?.role;
+    return !!role && this.staffRoles.includes(role);
+  }
+
+  homePath(): string {
+    return this.isStaff() ? '/admin/dashboard' : '/client/dashboard';
+  }
+
   hasRole(role: string): boolean {
     return this._currentUser()?.role === role;
   }

@@ -34,7 +34,7 @@ export class LoginComponent {
     this.loading.set(true);
     this.error.set('');
     this.auth.login(this.form.value).subscribe({
-      next: () => this.router.navigate(['/admin/dashboard']),
+      next: () => this.router.navigate([this.auth.homePath()]),
       error: (err) => {
         this.error.set(err?.error?.message ?? 'Credenciales incorrectas');
         this.loading.set(false);

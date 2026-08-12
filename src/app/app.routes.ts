@@ -3,7 +3,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/admin/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/shop', pathMatch: 'full' },
   {
     path: 'login',
     canActivate: [guestGuard],
@@ -25,6 +25,26 @@ export const routes: Routes = [
     path: 'loan-request',
     loadComponent: () =>
       import('./features/public/loan-request/loan-request.component').then(m => m.LoanRequestComponent),
+  },
+  {
+    path: 'client',
+    canActivate: [authGuard],
+    data: { roles: ['client', 'customer'] },
+    loadComponent: () =>
+      import('./features/client/layout/client-layout.component').then(m => m.ClientLayoutComponent),
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/client/dashboard/client-dashboard.component').then(m => m.ClientDashboardComponent),
+      },
+      {
+        path: 'payments',
+        loadComponent: () =>
+          import('./features/client/payments/client-payments.component').then(m => m.ClientPaymentsComponent),
+      },
+    ],
   },
   {
     path: 'admin',
@@ -70,6 +90,11 @@ export const routes: Routes = [
           import('./features/admin/payments/payments.component').then(m => m.PaymentsComponent),
       },
       {
+        path: 'payment-methods',
+        loadComponent: () =>
+          import('./features/admin/payment-methods/payment-methods.component').then(m => m.PaymentMethodsComponent),
+      },
+      {
         path: 'financing-plans',
         loadComponent: () =>
           import('./features/admin/financing-plans/financing-plans.component').then(m => m.FinancingPlansComponent),
@@ -81,5 +106,5 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: '/admin/dashboard' },
+  { path: '**', redirectTo: '/shop' },
 ];

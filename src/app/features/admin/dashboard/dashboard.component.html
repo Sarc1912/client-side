@@ -46,9 +46,9 @@
                 <div class="app-avatar">{{ app.user?.fullName?.[0] ?? 'U' }}</div>
                 <div class="app-info">
                     <span class="app-name">{{ app.user?.fullName ?? 'Usuario #' + app.userId }}</span>
-                    <span class="app-product">{{ app.product?.title ?? 'Producto #' + app.productId }}</span>
+                    <span class="app-product">{{ app.financingPlan?.title ?? 'Plan #' + app.financingPlanId }}</span>
                 </div>
-                <div class="app-amount">{{ app.requestedAmount | currency:'USD':'symbol':'1.0-0' }}</div>
+                <div class="app-amount">{{ app.totalLoanAmount | currency:'USD':'symbol':'1.0-0' }}</div>
                 <span class="badge" [class]="statusBadge(app.status)">{{ app.status }}</span>
             </div>
             }
