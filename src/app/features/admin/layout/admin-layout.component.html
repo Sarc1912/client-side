@@ -45,6 +45,9 @@
                 <h2 class="page-heading">{{ pageTitle() }}</h2>
             </div>
             <div class="topbar-right">
+                <button class="theme-toggle" (click)="theme.toggle()" [title]="theme.theme() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+                    <ng-icon [name]="theme.theme() === 'dark' ? 'heroSun' : 'heroMoon'" size="18"></ng-icon>
+                </button>
                 <div class="topbar-time">{{ currentTime() }}</div>
                 <div class="notification-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">

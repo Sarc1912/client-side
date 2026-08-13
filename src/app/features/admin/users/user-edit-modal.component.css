@@ -1,0 +1,27 @@
+.error-alert {
+    margin-bottom: 1rem;
+    background: var(--badge-danger-bg);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--badge-danger-text);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 540px) {
+    .edit-grid {
+        grid-template-columns: 1fr;
+    }
+}

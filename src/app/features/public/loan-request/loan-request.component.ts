@@ -31,6 +31,10 @@ export class LoanRequestComponent implements OnInit {
 
   selectedPlan = () => this.plans().find(p => p.id === this.selectedPlanId()) ?? null;
 
+  currencyCode = computed(() =>
+    this.product()?.currency ?? this.selectedItems()[0]?.product.currency ?? 'USD'
+  );
+
   steps = [
     { num: 1, label: 'Datos personales' },
     { num: 2, label: 'Plan' },
@@ -113,15 +117,24 @@ export class LoanRequestComponent implements OnInit {
     return Number((Number(plan.downPayment ?? 0) * this.scaleFactor()).toFixed(2));
   });
 
+  interestAmount = computed(() => {
+    const plan = this.selectedPlan();
+    if (!plan) return 0;
+    return Number(((this.totalPrice() * Number(plan.interestRateApr ?? 0)) / 100).toFixed(2));
+  });
+
+  totalToRepay = computed(() =>
+    Number((this.totalPrice() + this.interestAmount()).toFixed(2))
+  );
+
   estimateInstallment = computed(() => {
     const plan = this.selectedPlan();
     if (!plan) return 0;
-    return Number((Number(plan.installmentAmount ?? 0) * this.scaleFactor()).toFixed(2));
+    const repay = this.totalToRepay();
+    const down = this.estimateDownPayment();
+    const n = Number(plan.numberOfInstallments) || 1;
+    return Number(((repay - down) / n).toFixed(2));
   });
-
-  estimateLoanAmount = computed(() =>
-    Number((this.totalPrice() - this.estimateDownPayment()).toFixed(2))
-  );
 
   itemsSummary = computed(() =>
     this.selectedItems()

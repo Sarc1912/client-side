@@ -1,6 +1,6 @@
 <div class="modal-overlay" (click)="closeModal()">
-  <div class="modal-content card" (click)="$event.stopPropagation()">
-    <button class="close-btn" (click)="closeModal()" title="Cerrar">
+  <div class="modal-content card modal-xl" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()" title="Cerrar" aria-label="Cerrar ventana">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
         <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
       </svg>
@@ -13,8 +13,8 @@
           @if (mainImage(); as img) {
             <div class="gallery-main">
               @if (images().length > 1) {
-                <button class="gallery-arrow prev" (click)="prevImage()">&#10094;</button>
-                <button class="gallery-arrow next" (click)="nextImage()">&#10095;</button>
+                <button class="gallery-arrow prev" (click)="prevImage()" aria-label="Imagen anterior">&#10094;</button>
+                <button class="gallery-arrow next" (click)="nextImage()" aria-label="Imagen siguiente">&#10095;</button>
               }
               <img [src]="img.url" [alt]="img.altText || product.title" />
             </div>
@@ -31,7 +31,8 @@
           @if (images().length > 1) {
             <div class="gallery-thumbs">
               @for (img of images(); track $index; let i = $index) {
-                <button class="thumb" [class.active]="mainImageIndex() === i" (click)="setMainImage(i)">
+                <button class="thumb" [class.active]="mainImageIndex() === i" (click)="setMainImage(i)"
+                  [attr.aria-label]="'Ver imagen ' + (i + 1) + ' de ' + images().length">
                   <img [src]="img.url" [alt]="img.altText || product.title" />
                 </button>
               }
@@ -55,7 +56,7 @@
           <h2 class="detail-title">{{ product.title }}</h2>
 
           <div class="detail-price">
-            {{ product.basePrice | currency: product.currency ?? 'USD' : 'symbol' : '1.0-0' }}
+            {{ product.basePrice | currency: product.currency ?? 'USD' : 'symbol' : '1.2-2' }}
           </div>
 
           @if (plans().length > 0) {
@@ -69,8 +70,8 @@
                       <span class="plan-installments">{{ plan.numberOfInstallments }} cuotas</span>
                     </div>
                     <div class="plan-item-stats">
-                      <span class="plan-stat"><strong>{{ plan.installmentAmount | currency:'USD':'symbol':'1.2-2' }}</strong> /cuota</span>
-                      <span class="plan-stat">Enganche {{ plan.downPayment | currency:'USD':'symbol':'1.2-2' }}</span>
+                      <span class="plan-stat"><strong>{{ plan.installmentAmount | currency: product.currency ?? 'USD' : 'symbol' : '1.2-2' }}</strong> /cuota</span>
+                      <span class="plan-stat">Enganche {{ plan.downPayment | currency: product.currency ?? 'USD' : 'symbol' : '1.2-2' }}</span>
                       <span class="plan-stat">{{ plan.interestRateApr }}% anual</span>
                     </div>
                   </div>

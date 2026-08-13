@@ -1,0 +1,87 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-content modal-md" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Editar usuario</h3>
+      <button class="close-btn" (click)="close()" title="Cerrar" aria-label="Cerrar ventana">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      @if (error()) {
+        <div class="error-alert">{{ error() }}</div>
+      }
+
+      @if (user) {
+        <form [formGroup]="form" class="edit-form" (ngSubmit)="submit()">
+          <div class="edit-grid">
+            <div class="form-group">
+              <label class="form-label" for="edit-fullName">Nombre completo</label>
+              <input id="edit-fullName" formControlName="fullName" class="form-input" placeholder="Juan Pérez" />
+              @if (form.get('fullName')?.invalid && form.get('fullName')?.touched) {
+                <div class="form-error">El nombre es obligatorio</div>
+              }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-email">Correo electrónico</label>
+              <input id="edit-email" formControlName="email" type="email" class="form-input" placeholder="juan@email.com" />
+              @if (form.get('email')?.invalid && form.get('email')?.touched) {
+                <div class="form-error">Ingresa un correo válido</div>
+              }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-phone">Teléfono</label>
+              <input id="edit-phone" formControlName="phone" class="form-input" placeholder="+1 234 567 8900" />
+              @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
+                <div class="form-error">El teléfono es obligatorio</div>
+              }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-nationalId">Documento de identidad</label>
+              <input id="edit-nationalId" formControlName="nationalId" class="form-input" placeholder="DUI / Pasaporte" />
+              @if (form.get('nationalId')?.invalid && form.get('nationalId')?.touched) {
+                <div class="form-error">El documento es obligatorio</div>
+              }
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label" for="edit-address">Dirección</label>
+              <input id="edit-address" formControlName="address" class="form-input" placeholder="Calle, Ciudad, País" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-creditScore">Credit score</label>
+              <input id="edit-creditScore" formControlName="creditScore" type="number" min="0" max="1000" class="form-input" />
+              @if (form.get('creditScore')?.invalid && form.get('creditScore')?.touched) {
+                <div class="form-error">Valor entre 0 y 1000</div>
+              }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-status">Estado</label>
+              <select id="edit-status" formControlName="status" class="form-input">
+                @for (s of statuses; track s) {
+                  <option [ngValue]="s">{{ s }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-role">Rol</label>
+              <select id="edit-role" formControlName="role" class="form-input">
+                @for (r of roles; track r) {
+                  <option [ngValue]="r">{{ r }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </form>
+      }
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="close()">Cancelar</button>
+      <button type="button" class="btn-primary" [disabled]="isSubmitting()" (click)="submit()">
+        {{ isSubmitting() ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+    </div>
+  </div>
+</div>

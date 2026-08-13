@@ -6,8 +6,11 @@ import {
   heroShoppingBag,
   heroCreditCard,
   heroArrowRightOnRectangle,
+  heroMoon,
+  heroSun,
 } from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 interface NavItem {
   path: string;
@@ -24,6 +27,8 @@ interface NavItem {
       heroShoppingBag,
       heroCreditCard,
       heroArrowRightOnRectangle,
+      heroMoon,
+      heroSun,
     }),
   ],
   templateUrl: './client-layout.component.html',
@@ -36,7 +41,7 @@ export class ClientLayoutComponent {
     { path: '/shop', label: 'Tienda', icon: 'heroShoppingBag' },
   ];
 
-  constructor(public auth: AuthService) {}
+  constructor(public auth: AuthService, public theme: ThemeService) {}
 
   userInitials = computed(() => {
     const name = this.auth.currentUser()?.fullName ?? 'Cliente';

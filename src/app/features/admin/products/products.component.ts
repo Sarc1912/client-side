@@ -3,7 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { Product, Category } from '../../../core/models';
-import { heroPlus, heroPencil, heroTrash, heroPhoto, heroEye } from '@ng-icons/heroicons/outline';
+import { heroPlus, heroPencil, heroTrash, heroPhoto, heroEye, heroArchiveBox, heroArrowUpOnSquare } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { ProductDetailModal } from '../../../components/product-detail-modal/product-detail-modal';
 import { ProductCreateDetailModal } from '../../../components/product-create-detail-modal/product-create-detail-modal';
@@ -22,7 +22,7 @@ export interface ImagePreview {
   selector: 'app-products',
   standalone: true,
   imports: [CurrencyPipe, FormsModule, NgIconComponent, ProductDetailModal, ProductCreateDetailModal],
-  providers: [provideIcons({ heroPlus, heroEye, heroPencil, heroTrash, heroPhoto })],
+  providers: [provideIcons({ heroPlus, heroEye, heroPencil, heroTrash, heroPhoto, heroArchiveBox, heroArrowUpOnSquare })],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
@@ -96,11 +96,19 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  archive(product: Product): void {
-    if (!confirm(`¿Estás seguro de archivar el producto ${product.title}?`)) return;
-    this.api.patch(`products/${product.id}`, { status: 'archived' }).subscribe(() => {
-      this.products.update(list => list.map(p => p.id === product.id ? { ...p, status: 'archived' as any } : p));
-      this.filterProducts();
+  toggleStatus(product: Product): void {
+    const next = product.status === 'active' ? 'archived' : 'active';
+    const action = next === 'archived' ? 'archivar' : 'activar';
+    if (!confirm(`¿Estás seguro de ${action} el producto "${product.title}"?`)) return;
+    this.api.patch(`products/${product.id}/status`, { status: next }).subscribe({
+      next: () => {
+        this.products.update(list => list.map(p => p.id === product.id ? { ...p, status: next as any } : p));
+        this.filterProducts();
+      },
+      error: (err) => {
+        console.error('Error cambiando estado del producto', err);
+        alert('No se pudo cambiar el estado del producto.');
+      }
     });
   }
 

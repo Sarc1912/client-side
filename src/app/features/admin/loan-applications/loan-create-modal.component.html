@@ -1,5 +1,5 @@
     <div class="modal-overlay" (click)="close()">
-      <div class="modal-content card" style="max-width: 720px; max-height: 90vh; overflow-y: auto;" (click)="$event.stopPropagation()">
+      <div class="modal-content modal-lg" (click)="$event.stopPropagation()">
         <div class="modal-header">
           <h3 class="modal-title">Nueva solicitud de préstamo</h3>
           <button class="close-btn" (click)="close()">
@@ -122,7 +122,7 @@
             </div>
           }
 
-          <div class="modal-footer-actions">
+          <div class="modal-actions">
             <button type="button" class="btn-secondary" (click)="close()">Cancelar</button>
             <button type="button" class="btn-primary" [disabled]="isSubmitting()" (click)="submit()">
               {{ isSubmitting() ? 'Creando...' : 'Crear solicitud' }}

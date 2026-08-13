@@ -3,10 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { User } from '../../../core/models';
 import { DatePipe } from '@angular/common';
+import { UserDetailModalComponent } from './user-detail-modal.component';
+import { UserEditModalComponent } from './user-edit-modal.component';
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, UserDetailModalComponent, UserEditModalComponent],
   templateUrl: 'user.component.html',
   styleUrls: ['./user.component.css']
 })
@@ -18,6 +20,8 @@ export class UsersComponent implements OnInit {
   statusFilter = '';
   page = signal(1);
   perPage = 8;
+  detailUser = signal<User | null>(null);
+  editUser = signal<User | null>(null);
 
   constructor(private api: ApiService) { }
 
@@ -59,6 +63,27 @@ export class UsersComponent implements OnInit {
       this.users.set(updated);
       this.onSearch();
     });
+  }
+
+  openDetail(user: User): void {
+    this.detailUser.set(user);
+  }
+
+  closeDetail(): void {
+    this.detailUser.set(null);
+  }
+
+  openEdit(user: User): void {
+    this.editUser.set(user);
+  }
+
+  closeEdit(): void {
+    this.editUser.set(null);
+  }
+
+  onSaved(updated: User): void {
+    this.users.set(this.users().map(u => u.id === updated.id ? updated : u));
+    this.onSearch();
   }
 
   statusBadge(s: string): string {

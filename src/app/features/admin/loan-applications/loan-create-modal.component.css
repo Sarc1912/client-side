@@ -1,8 +1,8 @@
     .error-alert {
       margin-bottom: 1rem;
-      background: rgba(239,68,68,0.12);
+      background: var(--badge-danger-bg);
       border: 1px solid rgba(239,68,68,0.3);
-      color: #f87171;
+      color: var(--badge-danger-text);
       border-radius: 8px;
       padding: 0.75rem 1rem;
       font-size: 0.85rem;
@@ -85,8 +85,3 @@
     .est-row strong { color: var(--text-primary); }
     .est-total { border-top: 1px solid var(--accent); padding-top: 0.6rem; margin-top: 0.3rem; font-size: 1rem; }
     .est-total strong { color: var(--accent-hover); font-size: 1.1rem; }
-
-    .modal-footer-actions {
-      display: flex; justify-content: flex-end; gap: 0.6rem;
-      margin-top: 1.5rem;
-    }

@@ -12,6 +12,15 @@
         </a>
 
         <div class="top-nav-right">
+            <button class="theme-toggle" (click)="theme.toggle()" [title]="theme.theme() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    @if (theme.theme() === 'dark') {
+                    <path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                    } @else {
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    }
+                </svg>
+            </button>
             @if (auth.isAuthenticated()) {
             @if (!auth.isStaff()) {
             <a routerLink="/client/dashboard" class="nav-link">
@@ -38,13 +47,19 @@
 
     <!-- Hero -->
     <div class="hero">
-        <div class="hero-orb hero-orb1"></div>
-        <div class="hero-orb hero-orb2"></div>
         <div class="hero-content">
             <span class="hero-tag">Financiamiento Flexible</span>
             <h1 class="hero-title">Equipa tu vida,<br><span class="hero-accent">paga a tu ritmo</span></h1>
-            <p class="hero-sub">Encuentra el producto perfecto y solicita financiamiento en minutos con tasas
-                competitivas.</p>
+            <p class="hero-sub">Encuentra el producto perfecto y solicita financiamiento en minutos con cuotas fijas
+                desde el día uno.</p>
+            @if (heroExample(); as ex) {
+            <div class="hero-example">
+                <span class="hero-example-label">Ejemplo real</span>
+                <span class="hero-example-text">{{ ex.title }}</span>
+                <span class="hero-example-price">{{ ex.installment | currency: ex.currency : 'symbol' : '1.2-2' }}/mes</span>
+                <span class="hero-example-sub">en {{ ex.months }} cuotas</span>
+            </div>
+            }
             <div class="hero-search">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="hs-icon">
                     <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
@@ -78,13 +93,21 @@
             @for (i of [1,2,3,4,5,6]; track i) {
             <div class="product-skeleton"></div>
             }
+            } @else if (error()) {
+            <div class="empty-shop" role="alert">
+                <p>No pudimos cargar los productos. Revisa tu conexión e inténtalo de nuevo.</p>
+                <button class="btn-primary" (click)="retry()">Reintentar</button>
+            </div>
             } @else if (filtered().length === 0) {
             <div class="empty-shop">
                 <p>No se encontraron productos</p>
+                @if (hasFilters()) {
+                <button class="btn-ghost" (click)="clearFilters()">Limpiar filtros</button>
+                }
             </div>
             } @else {
             @for (product of filtered(); track product.id) {
-            <div class="product-card" (click)="openDetail(product)">
+            <div class="product-card">
                 <div class="product-img-wrapper carousel-wrapper">
                     @if (product.images && product.images.length > 0) {
                     <!-- Contenedor de imágenes en capas -->
@@ -97,10 +120,12 @@
 
                     <!-- Flechas de navegación -->
                     @if (product.images.length > 1) {
-                    <button class="carousel-btn prev" (click)="prevImage(product.id, product.images.length, $event)">
+                    <button class="carousel-btn prev" (click)="prevImage(product.id, product.images.length, $event)"
+                        [attr.aria-label]="'Imagen anterior de ' + product.title">
                         &#10094;
                     </button>
-                    <button class="carousel-btn next" (click)="nextImage(product.id, product.images.length, $event)">
+                    <button class="carousel-btn next" (click)="nextImage(product.id, product.images.length, $event)"
+                        [attr.aria-label]="'Imagen siguiente de ' + product.title">
                         &#10095;
                     </button>
                     }
@@ -122,15 +147,15 @@
                     <span class="product-brand">{{ product.brand ?? product.category?.name ?? 'Sin marca' }}</span>
                     <h3 class="product-title">{{ product.title }}</h3>
                     <div class="product-price-row">
-                        <span class="product-price">{{ product.basePrice | currency:'USD':'symbol':'1.0-0' }}</span>
+                        <span class="product-price">{{ product.basePrice | currency: product.currency : 'symbol' : '1.2-2' }}</span>
                         @if (product.financingPlans && product.financingPlans.length > 0) {
-                        <span class="product-installment">desde 12 cuotas</span>
+                        <span class="product-installment">desde {{ minInstallments(product) }} cuotas</span>
                         }
                     </div>
                     @if (product.financingPlans && product.financingPlans.length > 0) {
                     <div class="plans-pills">
                         @for (plan of product.financingPlans.slice(0, 3); track plan.id) {
-                        <span class="plan-pill">{{ plan.numberOfInstallments }}m</span>
+                        <span class="plan-pill">{{ plan.numberOfInstallments }} cuotas</span>
                         }
                     </div>
                     }

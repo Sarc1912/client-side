@@ -1,71 +1,14 @@
-/* --- Tema Azul Oscuro Profesional --- */
+/* --- Token mapping desde el theme global --- */
 :host {
-    --primary-color: #3b82f6;
-    /* Azul brillante para acciones principales */
-    --primary-hover: #2563eb;
-    /* Azul un poco más oscuro al pasar el cursor */
-    --bg-card: #1e293b;
-    /* Fondo de tarjetas y contenedores (Azul pizarra oscuro) */
-    --bg-main: #0f172a;
-    /* Fondo general más profundo */
-    --text-main: #f8fafc;
-    /* Texto principal claro */
-    --text-muted: #94a3b8;
-    /* Texto secundario grisáceo/azulado */
-    --border-color: #334155;
-    /* Bordes sutiles oscuros */
-    --danger-color: #ef4444;
-    /* Rojo para alertas/eliminar */
-    --warning-color: #eab308;
-    /* Amarillo para destacados/principal */
-}
-
-/* Modal Styling */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(6px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1rem;
-}
-
-.modal-content {
-    background: var(--bg-card);
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    max-height: 90vh;
-    overflow-y: auto;
-    width: 100%;
-}
-
-/* Campos de formulario generales */
-.form-input {
-    background: #0f172a;
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    width: 100%;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.form-label {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 0.35rem;
-    display: block;
+    --primary-color: var(--accent);
+    --primary-hover: var(--accent-hover);
+    --bg-card: var(--modal-bg);
+    --bg-main: var(--bg-base);
+    --text-main: var(--text-primary);
+    --text-muted: var(--text-secondary);
+    --border-color: var(--border);
+    --danger-color: var(--danger);
+    --warning-color: var(--warning);
 }
 
 /* Drag & Drop Upload Zone */
@@ -74,7 +17,7 @@
     border-radius: 0.75rem;
     padding: 2rem 1.5rem;
     text-align: center;
-    background: #0f172a;
+    background: var(--bg-surface);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     margin-top: 1rem;
@@ -147,8 +90,8 @@
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     overflow: hidden;
-    background: #0f172a;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
 }

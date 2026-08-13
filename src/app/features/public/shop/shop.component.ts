@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { Product } from '../../../core/models';
 import { ProductDetailModal } from '../../../components/product-detail-modal/product-detail-modal';
 
@@ -18,6 +19,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   filtered = signal<Product[]>([]);
   categories = signal<string[]>([]);
   loading = signal(true);
+  error = signal(false);
   searchQuery = '';
   selectedCategory = signal('');
 
@@ -28,7 +30,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   currentImageIndexes: { [productId: number]: number } = {};
   private carouselInterval: any;
 
-  constructor(private api: ApiService, public auth: AuthService) { }
+  constructor(private api: ApiService, public auth: AuthService, public theme: ThemeService) { }
 
   userInitials = computed(() => {
     const name = this.auth.currentUser()?.fullName ?? 'U';
@@ -36,6 +38,12 @@ export class ShopComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  loadProducts(): void {
+    this.loading.set(true);
+    this.error.set(false);
     this.api.get<Product[]>('products').subscribe({
       next: (data) => {
         const rawList = Array.isArray(data) ? data : [];
@@ -63,17 +71,37 @@ export class ShopComponent implements OnInit, OnDestroy {
         // Iniciar movimiento automático cada 4 segundos
         this.startAutoCarousel();
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.error.set(true);
+      },
     });
   }
 
+  retry(): void {
+    this.loadProducts();
+  }
+
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.selectedCategory.set('');
+    this.filterProducts();
+  }
+
+  hasFilters(): boolean {
+    return this.searchQuery.trim() !== '' || this.selectedCategory() !== '';
+  }
+
   ngOnDestroy(): void {
-    if (this.carouselInterval) {
-      clearInterval(this.carouselInterval);
-    }
+    this.stopAutoCarousel();
   }
 
   startAutoCarousel(): void {
+    const prefersReducedMotion = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    this.stopAutoCarousel();
     this.carouselInterval = setInterval(() => {
       const currentFiltered = this.filtered();
       currentFiltered.forEach(product => {
@@ -83,6 +111,38 @@ export class ShopComponent implements OnInit, OnDestroy {
         }
       });
     }, 4000); // Cambia cada 4 segundos
+  }
+
+  stopAutoCarousel(): void {
+    if (this.carouselInterval) {
+      clearInterval(this.carouselInterval);
+      this.carouselInterval = null;
+    }
+  }
+
+  heroExample = computed(() => {
+    const withPlans = this.products().find(p => {
+      const plans = p.financingPlans;
+      return p.status === 'active' && Array.isArray(plans) && plans.length > 0;
+    });
+    if (!withPlans) return null;
+    const plans = withPlans.financingPlans!
+      .filter(pl => pl.isActive !== false)
+      .sort((a, b) => a.installmentAmount - b.installmentAmount);
+    const best = plans[0];
+    if (!best) return null;
+    return {
+      title: withPlans.title,
+      installment: best.installmentAmount,
+      months: best.numberOfInstallments,
+      currency: withPlans.currency,
+    };
+  });
+
+  minInstallments(product: Product): number {
+    const plans = (product.financingPlans ?? []).filter(pl => pl.isActive !== false);
+    if (plans.length === 0) return 0;
+    return Math.min(...plans.map(pl => pl.numberOfInstallments));
   }
 
   nextImage(productId: number, totalImages: number, event: Event): void {
@@ -97,19 +157,8 @@ export class ShopComponent implements OnInit, OnDestroy {
     this.currentImageIndexes[productId] = (current - 1 + totalImages) % totalImages;
   }
 
-  getCurrentImage(product: Product): string {
-    if (!product.images || product.images.length === 0) return '';
-    const index = this.currentImageIndexes[product.id] || 0;
-    return product.images[index].url;
-  }
-
-  getCurrentAlt(product: Product): string {
-    if (!product.images || product.images.length === 0) return product.title;
-    const index = this.currentImageIndexes[product.id] || 0;
-    return product.images[index].altText || product.title;
-  }
-
   filterProducts(): void {
+    this.error.set(false);
     const q = this.searchQuery.toLowerCase();
     const cat = this.selectedCategory();
     this.filtered.set(
@@ -121,6 +170,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   }
 
   openDetail(product: any): void {
+    this.stopAutoCarousel();
     this.selectedProduct.set(product);
     this.isDetailOpen.set(true);
   }
@@ -128,5 +178,6 @@ export class ShopComponent implements OnInit, OnDestroy {
   closeDetail(): void {
     this.isDetailOpen.set(false);
     this.selectedProduct.set(null);
+    this.startAutoCarousel();
   }
 }

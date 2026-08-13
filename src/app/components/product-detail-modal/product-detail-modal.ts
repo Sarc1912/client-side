@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed, HostListener } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -57,6 +57,13 @@ export class ProductDetailModal {
 
   closeModal(): void {
     this.close.emit();
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscape(_event: Event): void {
+    if (this.product) {
+      this.closeModal();
+    }
   }
 
   stockBadge = (stock: number) =>

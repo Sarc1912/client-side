@@ -32,12 +32,28 @@
               <div class="form-group">
                 <label class="form-label" for="nationalId">Documento de identidad</label>
                 <input id="nationalId" formControlName="nationalId" class="form-input" placeholder="DUI / Pasaporte"/>
+                <span class="form-hint">Lo usamos para validar tu solicitud. Nadie más tendrá acceso a él.</span>
               </div>
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label class="form-label" for="address">Dirección</label>
                 <input id="address" formControlName="address" class="form-input" placeholder="Calle, Ciudad, País"/>
               </div>
             </form>
+
+            @if (selectedItems().length > 0) {
+              <div class="step-assurance">
+                <span class="sa-label">Producto a financiar</span>
+                <span class="sa-items">{{ itemsSummary() }}</span>
+                <span class="sa-total">{{ totalPrice() | currency: currencyCode():'symbol':'1.2-2' }}</span>
+              </div>
+            }
+            <div class="trust-note">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2" />
+              </svg>
+              <span>Tus datos están protegidos y solo se usan para evaluar tu solicitud. No pedimos pagos por adelantado.</span>
+            </div>
           </div>
         }
 
@@ -53,10 +69,10 @@
                   <div class="plan-radio"><div class="radio-dot" [class.visible]="selectedPlanId() === plan.id"></div></div>
                   <div class="plan-detail">
                     <span class="plan-name">{{ plan.title ?? ('Plan #' + plan.id) }}</span>
-                    <span class="plan-info">{{ plan.numberOfInstallments }} cuotas · {{ plan.interestRateApr }}% anual · {{ plan.downPayment | currency:'USD':'symbol':'1.0-0' }} enganche</span>
+                    <span class="plan-info">{{ plan.numberOfInstallments }} cuotas · {{ plan.interestRateApr }}% anual · {{ plan.downPayment | currency: currencyCode():'symbol':'1.2-2' }} enganche</span>
                   </div>
                   <div class="plan-monthly">
-                    <span class="pm-val">{{ plan.installmentAmount | currency:'USD':'symbol':'1.0-0' }}</span>
+                    <span class="pm-val">{{ plan.installmentAmount | currency: currencyCode():'symbol':'1.2-2' }}</span>
                     <span class="pm-label">/cuota</span>
                   </div>
                 </div>
@@ -77,14 +93,17 @@
                         @if (item.product.images?.[0]) {
                           <img [src]="imageUrl(item.product.images[0].url)" alt=""/>
                         } @else {
-                          <span>🛍️</span>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:var(--text-muted)">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.5" />
+                            <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.5" />
+                          </svg>
                         }
                       </div>
                       <div class="item-info">
                         <span class="item-name">{{ item.product.title }}</span>
-                        <span class="item-price">{{ item.product.basePrice | currency:'USD':'symbol':'1.0-0' }} c/u</span>
+                        <span class="item-price">{{ item.product.basePrice | currency: currencyCode():'symbol':'1.2-2' }} c/u</span>
                       </div>
-                      <span class="item-subtotal">{{ item.product.basePrice * item.quantity | currency:'USD':'symbol':'1.0-0' }}</span>
+                      <span class="item-subtotal">{{ item.product.basePrice * item.quantity | currency: currencyCode():'symbol':'1.2-2' }}</span>
                     </div>
                   }
                 </div>
@@ -98,10 +117,13 @@
                   <span class="est-title">Estimación del plan</span>
                   <span class="est-sub">{{ selectedPlan()?.title ?? ('Plan #' + selectedPlan()?.id) }}</span>
                 </div>
-                <div class="est-row"><span>Total productos</span><strong>{{ totalPrice() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
-                <div class="est-row"><span>Enganche estimado</span><strong>{{ estimateDownPayment() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
-                <div class="est-row"><span>Cuota estimada</span><strong>{{ estimateInstallment() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
-                <div class="est-row est-total"><span>Total a financiar</span><strong>{{ estimateLoanAmount() | currency:'USD':'symbol':'1.2-2' }}</strong></div>
+                <div class="est-row"><span>Total productos</span><strong>{{ totalPrice() | currency: currencyCode():'symbol':'1.2-2' }}</strong></div>
+                <div class="est-row"><span>Porcentaje de interés</span><strong>{{ selectedPlan()?.interestRateApr }}%</strong></div>
+                <div class="est-row"><span>Plazo</span><strong>{{ selectedPlan()?.numberOfInstallments }} cuotas</strong></div>
+                <div class="est-row"><span>Interés calculado</span><strong>{{ interestAmount() | currency: currencyCode():'symbol':'1.2-2' }}</strong></div>
+                <div class="est-row"><span>Enganche estimado</span><strong>{{ estimateDownPayment() | currency: currencyCode():'symbol':'1.2-2' }}</strong></div>
+                <div class="est-row est-total"><span>Cuota</span><strong>{{ estimateInstallment() | currency: currencyCode():'symbol':'1.2-2' }}</strong></div>
+                <div class="est-row est-total"><span>Total a pagar</span><strong>{{ totalToRepay() | currency: currencyCode():'symbol':'1.2-2' }}</strong></div>
               </div>
             }
           </div>
@@ -135,7 +157,7 @@
                 </div>
                 <div class="confirm-item">
                   <span class="ci-label">Precio total</span>
-                  <span class="ci-val">{{ totalPrice() | currency:'USD':'symbol':'1.2-2' }}</span>
+                  <span class="ci-val">{{ totalPrice() | currency: currencyCode():'symbol':'1.2-2' }}</span>
                 </div>
                 <div class="confirm-item">
                   <span class="ci-label">Plan elegido</span>
@@ -146,16 +168,20 @@
                   <span class="ci-val">{{ selectedPlan()?.numberOfInstallments }} cuotas</span>
                 </div>
                 <div class="confirm-item">
+                  <span class="ci-label">Interés calculado</span>
+                  <span class="ci-val">{{ interestAmount() | currency: currencyCode():'symbol':'1.2-2' }}</span>
+                </div>
+                <div class="confirm-item">
                   <span class="ci-label">Enganche</span>
-                  <span class="ci-val">{{ estimateDownPayment() | currency:'USD':'symbol':'1.2-2' }}</span>
+                  <span class="ci-val">{{ estimateDownPayment() | currency: currencyCode():'symbol':'1.2-2' }}</span>
                 </div>
                 <div class="confirm-item">
                   <span class="ci-label">Cuota</span>
-                  <span class="ci-val">{{ estimateInstallment() | currency:'USD':'symbol':'1.2-2' }}</span>
+                  <span class="ci-val">{{ estimateInstallment() | currency: currencyCode():'symbol':'1.2-2' }}</span>
                 </div>
                 <div class="confirm-item">
-                  <span class="ci-label">Total a financiar</span>
-                  <span class="ci-val">{{ estimateLoanAmount() | currency:'USD':'symbol':'1.2-2' }}</span>
+                  <span class="ci-label">Total a pagar</span>
+                  <span class="ci-val">{{ totalToRepay() | currency: currencyCode():'symbol':'1.2-2' }}</span>
                 </div>
               </div>
             }

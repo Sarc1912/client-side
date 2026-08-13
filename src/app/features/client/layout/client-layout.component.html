@@ -22,6 +22,9 @@
           </nav>
 
           <div class="topbar-right">
+            <button class="theme-toggle" (click)="theme.toggle()" [title]="theme.theme() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+              <ng-icon [name]="theme.theme() === 'dark' ? 'heroSun' : 'heroMoon'" size="18"></ng-icon>
+            </button>
             <div class="user-chip">
               <div class="user-avatar">{{ userInitials() }}</div>
               <div class="user-meta">

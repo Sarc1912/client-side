@@ -11,9 +11,12 @@ import {
   heroCreditCard,
   heroBanknotes,
   heroChartBar,
-  heroShieldCheck
+  heroShieldCheck,
+  heroMoon,
+  heroSun
 } from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 interface NavItem {
   path: string;
@@ -38,7 +41,9 @@ interface NavItem {
       heroCreditCard,
       heroBanknotes,
       heroChartBar,
-      heroShieldCheck
+      heroShieldCheck,
+      heroMoon,
+      heroSun
     })
   ]
 })
@@ -56,7 +61,7 @@ export class AdminLayoutComponent {
     { path: '/admin/audit-logs', label: 'Auditoría', icon: 'heroShieldCheck' },
   ];
 
-  constructor(public auth: AuthService) { }
+  constructor(public auth: AuthService, public theme: ThemeService) { }
 
   userInitials = computed(() => {
     const name = this.auth.currentUser()?.fullName ?? 'Admin';

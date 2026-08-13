@@ -13,7 +13,7 @@
     justify-content: space-between;
     gap: 1rem;
     padding: 0.75rem 2rem;
-    background: rgba(15, 17, 23, 0.85);
+    background: var(--glass-bg);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
 }
@@ -64,6 +64,25 @@
 
 .nav-link:hover {
     color: var(--accent-hover);
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.theme-toggle:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
 }
 
 .nav-cta {
@@ -126,37 +145,14 @@
     position: relative;
     overflow: hidden;
     padding: 4rem 2rem;
-    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 100%);
+    background: linear-gradient(135deg, var(--bg-base) 0%, var(--bg-surface) 100%);
     border-bottom: 1px solid var(--border);
-}
-
-.hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.3;
-}
-
-.hero-orb1 {
-    width: 400px;
-    height: 400px;
-    background: #6366f1;
-    top: -100px;
-    right: -80px;
-}
-
-.hero-orb2 {
-    width: 250px;
-    height: 250px;
-    background: #8b5cf6;
-    bottom: -80px;
-    left: 20%;
 }
 
 .hero-content {
     position: relative;
     z-index: 1;
-    max-width: 600px;
+    max-width: 620px;
 }
 
 .hero-tag {
@@ -179,15 +175,51 @@
 }
 
 .hero-accent {
-    background: linear-gradient(90deg, #818cf8, #c084fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--accent-hover);
 }
 
 .hero-sub {
     color: var(--text-secondary);
-    margin: 0 0 1.5rem;
+    margin: 0 0 1.25rem;
     font-size: 1rem;
+}
+
+.hero-example {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+}
+
+.hero-example-label {
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.hero-example-text {
+    color: var(--text-secondary);
+}
+
+.hero-example-price {
+    font-weight: 700;
+    color: var(--accent-hover);
+}
+
+.hero-example-sub {
+    color: var(--text-muted);
+    font-size: 0.75rem;
 }
 
 .hero-search {
@@ -226,7 +258,7 @@
     display: flex;
     gap: 1.5rem;
     padding: 1.5rem 2rem;
-    max-width: 1400px;
+    max-width: 1280px;
     margin: 0 auto;
 }
 
@@ -285,6 +317,10 @@
     text-align: center;
     padding: 4rem;
     color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
 .product-skeleton {
@@ -316,7 +352,7 @@
 
 .product-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    box-shadow: var(--shadow-md);
     border-color: var(--accent);
 }
 
@@ -340,13 +376,13 @@
     border-radius: 999px;
     font-size: 0.7rem;
     font-weight: 600;
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
+    background: var(--badge-success-bg);
+    color: var(--badge-success-text);
 }
 
 .product-badge-stock.out {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
+    background: var(--badge-danger-bg);
+    color: var(--badge-danger-text);
 }
 
 .product-body {
@@ -441,7 +477,7 @@
     width: 100%;
     height: 220px;
     overflow: hidden;
-    background-color: #f3f4f6;
+    background-color: var(--bg-surface);
 }
 
 .carousel-track {
@@ -526,4 +562,135 @@
     background-color: rgba(0, 0, 0, 0.8);
     transform: translateY(-50%) scale(1.1);
     /* Efecto de crecimiento al colocar el mouse sobre la flecha */
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+    .hero {
+        padding: 3.5rem 1.5rem;
+    }
+
+    .shop-main {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-nav {
+        padding: 0.75rem 1rem;
+    }
+
+    .hero {
+        padding: 3rem 1.25rem;
+    }
+
+    .hero-title {
+        font-size: 2.1rem;
+    }
+
+    .shop-main {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1.25rem;
+    }
+
+    /* Categorías como chips horizontales deslizables */
+    .cat-sidebar {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .cat-title {
+        flex-basis: 100%;
+        margin-bottom: 0;
+    }
+
+    .cat-item {
+        width: auto;
+        display: inline-block;
+        padding: 0.6rem 0.9rem;
+        border-radius: 999px;
+        margin-bottom: 0;
+        border: 1px solid var(--border);
+        min-height: 44px;
+    }
+
+    .cat-item.active {
+        border-color: var(--accent);
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
+    /* Targets táctiles ≥ 44px */
+    .shop-cta,
+    .shop-view {
+        min-height: 44px;
+    }
+
+    .theme-toggle {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 640px) {
+    .user-name {
+        display: none;
+    }
+
+    .hero {
+        padding: 2.5rem 1.25rem;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .hero-sub {
+        font-size: 0.92rem;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    .shop-cta-row {
+        flex-direction: column;
+    }
+
+    .shop-cta-row .shop-cta {
+        width: 100%;
+    }
+}
+
+/* Flechas del carrusel siempre visibles en pantallas táctiles */
+@media (hover: none) and (pointer: coarse) {
+    .carousel-btn {
+        opacity: 1;
+        width: 40px;
+        height: 40px;
+    }
+
+    .carousel-btn.prev {
+        transform: translateY(-50%) translateX(0);
+    }
+
+    .carousel-btn.next {
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-card,
+    .carousel-slide,
+    .carousel-btn,
+    .product-skeleton {
+        transition: none;
+        animation: none;
+    }
 }

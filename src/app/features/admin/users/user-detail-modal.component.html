@@ -1,0 +1,60 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-content modal-md" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Detalle del usuario</h3>
+      <button class="close-btn" (click)="close()" title="Cerrar" aria-label="Cerrar ventana">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      @if (user) {
+        <div class="detail-summary">
+          <div class="detail-avatar">{{ user.fullName[0] }}</div>
+          <div class="detail-identity">
+            <div class="detail-name">{{ user.fullName }}</div>
+            <div class="detail-email">{{ user.email }}</div>
+          </div>
+          <div class="detail-badges">
+            <span class="badge badge-accent">{{ user.role | titlecase }}</span>
+            <span class="badge" [class]="statusBadge(user.status)">{{ user.status }}</span>
+            <span [class]="scoreBadge(user.creditScore)">{{ user.creditScore }} pts</span>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-key">Documento</span>
+            <span class="detail-val">{{ user.nationalId || '—' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-key">Teléfono</span>
+            <span class="detail-val">{{ user.phone || '—' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-key">Dirección</span>
+            <span class="detail-val">{{ user.address || '—' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-key">ID público</span>
+            <span class="detail-val detail-mono">{{ user.publicId }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-key">Registrado</span>
+            <span class="detail-val">{{ user.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-key">Última actualización</span>
+            <span class="detail-val">{{ user.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="close()">Cerrar</button>
+    </div>
+  </div>
+</div>

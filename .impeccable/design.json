@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-12T19:45:01.4992746-04:00",
+  "title": "Design System: FinanCrece",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Índigo Comercial", "canonical": "#6366f1", "tonalRamp": ["#312e81", "#3730a3", "#4338ca", "#4f46e5", "#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe"] },
+      "primary-hover": { "role": "primary", "displayName": "Índigo Comercial Claro", "canonical": "#818cf8", "tonalRamp": ["#312e81", "#3730a3", "#4338ca", "#4f46e5", "#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe"] },
+      "primary-violet": { "role": "primary", "displayName": "Violeta de Marca", "canonical": "#8b5cf6", "tonalRamp": ["#4c1d95", "#5b21b6", "#6d28d9", "#7c3aed", "#8b5cf6", "#a78bfa", "#c4b5fd", "#ddd6fe"] },
+      "primary-light": { "role": "primary", "displayName": "Halo Índigo", "canonical": "rgba(99, 102, 241, 0.12)", "tonalRamp": ["#312e81", "#3730a3", "#4338ca", "#4f46e5", "#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe"] },
+      "bg-base": { "role": "neutral", "displayName": "Base Nocturna", "canonical": "#0f1117", "tonalRamp": ["#05060a", "#090b10", "#0d0f14", "#0f1117", "#13161d", "#171a22", "#1c1f28", "#222633"] },
+      "bg-surface": { "role": "neutral", "displayName": "Superficie", "canonical": "#1a1d27", "tonalRamp": ["#0d0f15", "#11141b", "#151821", "#181b25", "#1a1d27", "#232632", "#2c2f3d", "#383c4c"] },
+      "bg-card": { "role": "neutral", "displayName": "Tarjeta", "canonical": "#20232e", "tonalRamp": ["#12141c", "#171a23", "#1c1f29", "#20232e", "#262a36", "#2d3140", "#363a4b", "#404459"] },
+      "bg-hover": { "role": "neutral", "displayName": "Hover", "canonical": "#2a2d3a", "tonalRamp": ["#191c26", "#1f2230", "#252837", "#2a2d3a", "#323643", "#3a3e4d", "#434757", "#4e5365"] },
+      "border": { "role": "neutral", "displayName": "Borde", "canonical": "#2e3144", "tonalRamp": ["#1b1d2c", "#222435", "#282b3d", "#2e3144", "#363950", "#3f435c", "#484c67", "#535772"] },
+      "text-primary": { "role": "neutral", "displayName": "Texto Principal", "canonical": "#f1f5f9", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"] },
+      "text-secondary": { "role": "neutral", "displayName": "Texto Secundario", "canonical": "#94a3b8", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"] },
+      "text-muted": { "role": "neutral", "displayName": "Texto Apagado", "canonical": "#64748b", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"] },
+      "success": { "role": "semantic", "displayName": "Éxito", "canonical": "#22c55e", "tonalRamp": ["#14532d", "#166534", "#15803d", "#16a34a", "#22c55e", "#4ade80", "#86efac", "#bbf7d0"] },
+      "warning": { "role": "semantic", "displayName": "Advertencia", "canonical": "#f59e0b", "tonalRamp": ["#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fcd34d", "#fde68a"] },
+      "danger": { "role": "semantic", "displayName": "Peligro", "canonical": "#ef4444", "tonalRamp": ["#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca"] },
+      "info": { "role": "semantic", "displayName": "Info", "canonical": "#38bdf8", "tonalRamp": ["#0c4a6e", "#075985", "#0369a1", "#0284c7", "#38bdf8", "#7dd3fc", "#bae6fd", "#e0f2fe"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero de la tienda; única aparición del sistema." },
+      "title": { "displayName": "Title", "purpose": "Títulos de página (1.5rem) y de modal (1.15rem)." },
+      "body": { "displayName": "Body", "purpose": "Texto general, tablas e inputs; botones usan 500." },
+      "label": { "displayName": "Label", "purpose": "Badges y micro-etiquetas uppercase de sección/columna." }
+    },
+    "shadows": [
+      { "name": "sm", "value": "0 1px 2px rgba(0,0,0,0.4)", "purpose": "Detalles mínimos." },
+      { "name": "md", "value": "0 4px 12px rgba(0,0,0,0.4)", "purpose": "Hover de cards y KPI." },
+      { "name": "lg", "value": "0 12px 40px rgba(0,0,0,0.5)", "purpose": "Modales y card de auth." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Easing estándar para transiciones de estado y carrusel." },
+      { "name": "dur-state", "value": "0.15s", "purpose": "Transiciones de estado (hover, color)." },
+      { "name": "dur-fade", "value": "0.2s", "purpose": "fadeIn de overlay de modal." },
+      { "name": "dur-modal", "value": "0.22s", "purpose": "modalIn de modal-content." },
+      { "name": "dur-carousel", "value": "0.6s", "purpose": "Fade/scale de slides del carrusel de producto." },
+      { "name": "dur-shimmer", "value": "1.5s", "purpose": "Animación shimmer de skeletons." },
+      { "name": "dur-sidebar", "value": "0.25s", "purpose": "Transición de ancho del sidebar admin." }
+    ],
+    "breakpoints": [
+      { "name": "auth", "value": "480px" },
+      { "name": "form-grid", "value": "540px" },
+      { "name": "modal", "value": "640px" },
+      { "name": "client-nav", "value": "720px" },
+      { "name": "admin-dashboard", "value": "900px" },
+      { "name": "client-grid", "value": "960px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal de cualquier pantalla: una sola por vista, en Índigo Comercial.",
+      "html": "<button class=\"ds-btn-primary\">Solicitar financiamiento</button>",
+      "css": ".ds-btn-primary { background: var(--accent); color: #fff; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; font: 500 0.875rem/1.5 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: background 0.15s ease, transform 0.15s ease; } .ds-btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); } .ds-btn-primary:active { transform: translateY(0); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acción secundaria: superficie con borde, sin relleno de acento.",
+      "html": "<button class=\"ds-btn-secondary\">Guardar</button>",
+      "css": ".ds-btn-secondary { background: var(--bg-surface); color: var(--text-primary); padding: 0.6rem 1.25rem; border: 1px solid var(--border); border-radius: 8px; font: 500 0.875rem/1.5 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: background 0.15s ease; } .ds-btn-secondary:hover { background: var(--bg-hover); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Acción de bajo énfasis: transparente con borde, texto secundario.",
+      "html": "<button class=\"ds-btn-ghost\">Cancelar</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: var(--text-secondary); padding: 0.6rem 1.25rem; border: 1px solid var(--border); border-radius: 8px; font: 500 0.875rem/1.5 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: background 0.15s ease, color 0.15s ease; } .ds-btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de texto con icono y halo índigo al foco. El placeholder va en Texto Apagado.",
+      "html": "<div class=\"ds-input-wrap\"><svg class=\"ds-input-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"7\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.5\" y2=\"16.5\"></line></svg><input class=\"ds-input\" type=\"text\" placeholder=\"Buscar productos\"></div>",
+      "css": ".ds-input-wrap { position: relative; } .ds-input { background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 0.875rem; padding-left: 2.5rem; font: 400 0.875rem/1.5 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; width: 100%; transition: border-color 0.15s ease, box-shadow 0.15s ease; } .ds-input::placeholder { color: var(--text-muted); } .ds-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); } .ds-input-icon { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Contenedor estándar: plano en reposo, se eleva con hover. Las tablas dentro usan padding 0.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">Próximo pago</div><div class=\"ds-card-amount\">$1,234.50</div><div class=\"ds-card-sub\">Vence el 15 de septiembre</div></div>",
+      "css": ".ds-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; } .ds-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); } .ds-card-title { font: 600 0.78rem/1 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; } .ds-card-amount { font: 800 2rem/1.15 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-primary); } .ds-card-sub { font: 400 0.875rem/1.5 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-muted); margin-top: 0.35rem; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Pill de estado: fondo translúcido semántico + texto del tono. Nunca bloque sólido.",
+      "html": "<span class=\"ds-badge ds-badge--success\">Pagado</span><span class=\"ds-badge ds-badge--warning\">Pendiente</span><span class=\"ds-badge ds-badge--danger\">Vencido</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; padding: 0.2rem 0.65rem; border-radius: 999px; font: 600 0.75rem/1.3 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; letter-spacing: 0.03em; white-space: nowrap; } .ds-badge--success { background: var(--badge-success-bg); color: var(--badge-success-text); } .ds-badge--warning { background: var(--badge-warning-bg); color: var(--badge-warning-text); } .ds-badge--danger { background: var(--badge-danger-bg); color: var(--badge-danger-text); } .ds-badge + .ds-badge { margin-left: 0.35rem; }"
+    },
+    {
+      "name": "Modal",
+      "kind": "custom",
+      "refersTo": "modal",
+      "description": "Overlay con blur + contenido radius 16px. En móvil se vuelve bottom-sheet.",
+      "html": "<div class=\"ds-overlay\"><div class=\"ds-modal\" role=\"dialog\" aria-modal=\"true\"><div class=\"ds-modal-head\"><h3 class=\"ds-modal-title\">Detalle del pago</h3><button class=\"ds-modal-close\" aria-label=\"Cerrar\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line></svg></button></div><div class=\"ds-modal-body\">Contenido del modal</div></div></div>",
+      "css": ".ds-overlay { position: fixed; inset: 0; z-index: 1000; background: var(--overlay); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; animation: ds-fade 0.2s ease; } .ds-modal { background: var(--modal-bg); border: 1px solid var(--modal-border); border-radius: 16px; box-shadow: var(--shadow-lg); width: 100%; max-width: 560px; max-height: calc(100vh - 3rem); overflow-y: auto; animation: ds-modal-in 0.22s ease; } .ds-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 1.5rem 0.75rem; border-bottom: 1px solid var(--modal-border); } .ds-modal-title { font: 700 1.15rem/1.3 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-primary); margin: 0; } .ds-modal-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.4rem; padding: 0.25rem; border-radius: 6px; cursor: pointer; line-height: 0; transition: color 0.15s ease, background 0.15s ease; } .ds-modal-close:hover { color: var(--text-primary); background: var(--bg-hover); } .ds-modal-body { padding: 1.5rem; color: var(--text-secondary); font: 400 0.875rem/1.5 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; } @keyframes ds-fade { from { opacity: 0; } to { opacity: 1; } } @keyframes ds-modal-in { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } } @media (max-width: 640px) { .ds-overlay { align-items: flex-end; padding: 0; } .ds-modal { max-width: 100%; border-radius: 16px 16px 0 0; max-height: 90vh; } }"
+    },
+    {
+      "name": "Navigation Item",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Ítem de navegación: pill con hover y estado activo en Índigo translúcido.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item ds-nav-item--active\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"9\"></rect><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\"></rect><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\"></rect><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\"></rect></svg><span>Dashboard</span></a><a class=\"ds-nav-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"></path><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"></path></svg><span>Préstamos</span></a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 0.25rem; } .ds-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font: 500 0.875rem/1.4 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; transition: background 0.15s ease, color 0.15s ease; } .ds-nav-item:hover { background: var(--bg-hover); color: var(--text-primary); } .ds-nav-item--active { background: var(--accent-light); color: var(--accent-hover); } .ds-nav-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "product-card",
+      "description": "Tarjeta de producto de la tienda: carrusel de imágenes, brand uppercase, precio en Índigo y pills de plan.",
+      "html": "<div class=\"ds-pcard\"><div class=\"ds-pcard-img\" style=\"background:linear-gradient(135deg,#6366f1,#8b5cf6)\"></div><div class=\"ds-pcard-body\"><span class=\"ds-pcard-brand\">Samsung</span><h4 class=\"ds-pcard-title\">Laptop Ultrabook 15&quot;</h4><div class=\"ds-pcard-price\">$12,499 <span class=\"ds-pcard-install\">· 12 cuotas de $1,190</span></div><div class=\"ds-pcard-pills\"><span class=\"ds-pill\">3 cuotas</span><span class=\"ds-pill\">6 cuotas</span><span class=\"ds-pill\">12 cuotas</span></div></div></div>",
+      "css": ".ds-pcard { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; } .ds-pcard:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent); } .ds-pcard-img { height: 220px; } .ds-pcard-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.4rem; } .ds-pcard-brand { font: 600 0.7rem/1 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); } .ds-pcard-title { font: 600 0.9rem/1.3 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-primary); margin: 0; } .ds-pcard-price { font: 700 1.15rem/1.2 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--accent-hover); } .ds-pcard-install { font: 400 0.72rem/1.2 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-muted); } .ds-pcard-pills { display: flex; gap: 0.35rem; margin-top: 0.2rem; } .ds-pill { padding: 0.15rem 0.45rem; border-radius: 999px; background: var(--bg-surface); border: 1px solid var(--border); font: 600 0.68rem/1.3 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-secondary); }"
+    },
+    {
+      "name": "Plan Option",
+      "kind": "custom",
+      "refersTo": "plan-option",
+      "description": "Selector de plan de financiamiento: radio custom con borde acento al seleccionar y cuota mensual destacada.",
+      "html": "<div class=\"ds-plan ds-plan--selected\"><span class=\"ds-radio\"><span class=\"ds-radio-dot\"></span></span><div class=\"ds-plan-info\"><span class=\"ds-plan-name\">Plan 12 meses</span><span class=\"ds-plan-meta\">Tasa anual 24% · Enganche $2,499</span></div><span class=\"ds-plan-monthly\">$1,190<span class=\"ds-plan-per\">/mes</span></span></div>",
+      "css": ".ds-plan { display: flex; align-items: center; gap: 1rem; background: var(--bg-surface); border: 2px solid var(--border); border-radius: 10px; padding: 1rem; transition: border-color 0.15s ease, background 0.15s ease; cursor: pointer; } .ds-plan:hover { border-color: var(--accent); } .ds-plan--selected { border-color: var(--accent); background: var(--accent-light); } .ds-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--text-muted); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s ease; } .ds-plan--selected .ds-radio { border-color: var(--accent); } .ds-radio-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity 0.15s ease; } .ds-plan--selected .ds-radio-dot { opacity: 1; } .ds-plan-info { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; } .ds-plan-name { font: 600 0.9rem/1.3 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-primary); } .ds-plan-meta { font: 400 0.78rem/1.4 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-muted); } .ds-plan-monthly { font: 700 1.15rem/1.2 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--accent-hover); } .ds-plan-per { font: 400 0.75rem/1.2 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-muted); margin-left: 0.2rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El Escaparate con Crédito Propio",
+    "overview": "FinanCrece es una tienda de equipos y tecnología que no termina en la compra: el financiamiento a plazos, el seguimiento de cuotas y la cobranza viven en el mismo escaparate. El sistema es cercano y comercial —una tienda que entiende de dinero— no una banca fría. Comunica confianza con sobriedad: fondo oscuro como base, superficies delimitadas por borde y un acento Índigo Comercial reservado para montos, marca y acciones. Las tres superficies (tienda, portal del cliente, panel admin) comparten el mismo lenguaje con densidades distintas: la tienda respira, el panel es escaneable.\n\nAnti-referencia declarada: nada de estética hecha por IA. Se rechazan las sombras genéricas de plantilla, los gradientes decorativos sin propósito y la saturación de efectos. Cada elemento visual debe justificarse por su función: mostrar un dato financiero o disparar una acción.",
+    "keyCharacteristics": [
+      "Acento índigo→violeta (#6366f1 → #8b5cf6) reservado para montos, marca, estados activos y una acción principal por pantalla.",
+      "Superficies planas con borde 1px; elevación solo en interacción (hover, foco, modales).",
+      "Estados siempre en pills (radius 999px) con fondo translúcido semántico.",
+      "Micro-etiquetas de sección en mayúsculas (uppercase, letter-spacing .05–.06em).",
+      "Inter como única familia tipográfica, en pesos 500–800.",
+      "Tema oscuro por defecto; el claro es un derivado con las mismas funciones de color."
+    ],
+    "rules": [
+      { "name": "The Índigo Rarity Rule", "body": "El acento se usa en ≤10% de cualquier pantalla: una acción principal, los montos y la marca. Si algo no es acción, monto o marca, no es índigo.", "section": "colors" },
+      { "name": "The One-Brand-Gradient Rule", "body": "El gradiente #6366f1 → #8b5cf6 existe solo para el logo, los avatares con iniciales y los iconos de marca. Nada más usa gradiente.", "section": "colors" },
+      { "name": "The Uppercase Whisper Rule", "body": "Los encabezados de sección y las columnas de tabla van en mayúsculas, 600, .7–.78rem y letter-spacing .05–.06em, en Texto Apagado. Son el segundo plano; el dato manda.", "section": "typography" },
+      { "name": "The Money-Weight Rule", "body": "Todo monto visible pesa 700–800 (precios 700–800, cuotas 700, totales 700–800). Un número que cuesta dinero nunca es peso 400.", "section": "typography" },
+      { "name": "The Flat-At-Rest Rule", "body": "Superficies planas en reposo. Las sombras aparecen solo como respuesta a un estado (hover, foco, modal). Un card en reposo jamás flota.", "section": "elevation" },
+      { "name": "The Glass-Only Rule", "body": "backdrop-filter + transparencia solo en topbars sticky (blur 16px, --glass-bg 0.85) y en la card de auth (blur 20px). Fuera de ahí no hay cristal.", "section": "elevation" },
+      { "name": "The Status-Pill Rule", "body": "Todo estado (préstamo, solicitud, pago, stock, usuario) es una pill 999px con fondo translúcido semántico. Nunca un bloque sólido ni un cuadrado.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do usar las variables CSS de src/styles.css (--accent, --bg-card, --border, --radius-*, --shadow-*) antes que valores hardcodeados.",
+      "Do mantener el oscuro como tema por defecto y derivar el claro con data-theme='light' en <html>.",
+      "Do reservar el Índigo Comercial para acción, montos y marca (The Índigo Rarity Rule).",
+      "Do expresar estados como pills semánticas y encabezados de sección en uppercase.",
+      "Do usar el gradiente de marca solo en logo, avatares e iconos de marca.",
+      "Do elevar en hover con translateY(-1/-3px) + --shadow-md, y dar foco con halo de 3px --accent-light.",
+      "Do usar glass (blur) solo en topbars sticky y card de auth.",
+      "Do mantener la arquitectura: clases custom en styles.css + CSS por componente, sin utilidades Tailwind en templates."
+    ],
+    "donts": [
+      "Don't añadir sombras a superficies en reposo (The Flat-At-Rest Rule).",
+      "Don't usar gradientes decorativos fuera de la marca, ni fondos de color sólido para estados.",
+      "Don't añadir nuevas familias de fuentes: Inter es la única.",
+      "Don't agravar el Radius Gap: si introduces un radio nuevo, usa los tokens o los valores efectivos (8/12/16).",
+      "Don't duplicar patrones entre componentes sin abstraerlos (.action-btn, .table-avatar, .btn-ghost ya se repiten).",
+      "Don't usar estética de plantilla: sombras genéricas (0 8px 24px), emoji, iconos stock o efectos sin función."
+    ]
+  }
+}

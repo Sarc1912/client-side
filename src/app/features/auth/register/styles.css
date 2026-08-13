@@ -50,12 +50,12 @@
     z-index: 10;
     width: 100%;
     max-width: 520px;
-    background: rgba(26, 29, 39, 0.85);
+    background: var(--glass-bg);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid var(--glass-border);
     border-radius: 20px;
     padding: 2.5rem;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    box-shadow: var(--shadow-lg);
 }
 
 .login-logo {
@@ -158,12 +158,12 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(239, 68, 68, 0.12);
+    background: var(--badge-danger-bg);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 8px;
     padding: 0.75rem;
     font-size: 0.8rem;
-    color: #f87171;
+    color: var(--badge-danger-text);
 }
 
 .login-btn {

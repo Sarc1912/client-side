@@ -1,51 +1,7 @@
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  z-index: 100;
-}
-
-.modal-content {
-  position: relative;
-  width: 100%;
-  max-width: 880px;
-  max-height: 92vh;
-  overflow-y: auto;
-  border-radius: 16px;
-  padding: 1.5rem;
-}
-
-.close-btn {
-  position: absolute;
-  top: 0.9rem;
-  right: 0.9rem;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  transition: all 0.15s;
-}
-.close-btn:hover { color: var(--danger); border-color: var(--danger); }
-
 .modal-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-}
-@media (max-width: 680px) {
-  .modal-grid { grid-template-columns: 1fr; }
 }
 
 /* Gallery */
